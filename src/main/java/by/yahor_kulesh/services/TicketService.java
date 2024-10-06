@@ -1,15 +1,16 @@
 package by.yahor_kulesh.services;
 
+import by.yahor_kulesh.model.Sector;
 import by.yahor_kulesh.model.Ticket;
 import by.yahor_kulesh.validators.InputValidator;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.Arrays;
 import java.util.Scanner;
 
 public class TicketService {
+    private static final InputValidator inputValidator = new InputValidator();
     public static final Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -26,7 +27,7 @@ public class TicketService {
                         0.Exit
                         """
             );
-            switch (inputInt(inputString(sc.nextLine()))){
+            switch (inputValidator.inputInt()){
                 case 1:{
                     Ticket t = new Ticket();
                     System.out.println(t);
@@ -36,32 +37,30 @@ public class TicketService {
                     System.out.println("Input Concert hall:");
                     String concertHall = inputStringOfSize(validateStringLimits(inputString(sc.nextLine()),new char[][]{{'A','Z'},{'a','z'}}), 10);
                     System.out.println("Input Event code:");
-                    String eventCode = validateEventCode(inputInt(inputString(sc.nextLine())));
+                    String eventCode = validateEventCode(inputValidator.inputInt());
                     System.out.println("Input Event time:");
-                    LocalDateTime time = inputTime();
+                    ZonedDateTime time = inputTime();
                     Ticket ticket = new Ticket(concertHall, eventCode, time);
                     System.out.println(ticket);
                     break;
                 }
                 case 3: {
                     System.out.println("Writing full ticket:");
-                    System.out.println("Input ID");
-                    String ID = inputStringOfSize(inputString(sc.nextLine()), 4);
                     System.out.println("Input Concert hall:");
                     String concertHall = inputStringOfSize(validateStringLimits(inputString(sc.nextLine()),new char[][]{{'A','Z'},{'a','z'}}), 10);
                     System.out.println("Input Event code:");
-                    String eventCode = validateEventCode(inputInt(inputString(sc.nextLine())));
+                    String eventCode = validateEventCode(inputValidator.inputInt());
                     System.out.println("Input Event time:");
-                    LocalDateTime time = inputTime();
+                    ZonedDateTime time = inputTime();
                     System.out.println("Is it Promo?:\n1.True\n2.False");
-                    boolean isPromo = isPromo(inputInt(inputString(sc.nextLine())));
+                    boolean isPromo = isPromo(inputValidator.inputInt());
                     System.out.println("Input sector:");
-                    char sector = inputStringOfSize(validateStringLimits(inputString(sc.nextLine()),new char[][]{{'A','C'}, {'a','c'}}), 1).charAt(0);
+                    Sector sector = Enum.valueOf(Sector.class, inputStringOfSize(validateStringLimits(inputString(sc.nextLine()),new char[][]{{'A','C'}, {'a','c'}}), 1).toUpperCase());
                     System.out.println("Input allowed backpack weight:");
-                    double weight = inputDouble(inputString(sc.nextLine()),3).doubleValue();
+                    double weight = inputValidator.inputBigDecimal(3).doubleValue();
                     System.out.println("Input price:");
-                    BigDecimal price = inputDouble(inputString(sc.nextLine()),2);
-                    Ticket ticket = new Ticket(ID, concertHall, eventCode, time, isPromo, sector, weight, price);
+                    BigDecimal price = inputValidator.inputBigDecimal(2);
+                    Ticket ticket = new Ticket(concertHall, eventCode, time, isPromo, sector, weight, price);
                     System.out.println(ticket);
                     break;
                 }
@@ -84,37 +83,6 @@ public class TicketService {
         }
     }
 
-
-    public static int inputInt(String input){
-        for (int i = 0; i < input.length(); i++) {
-            if (input.charAt(i) < '0' || input.charAt(i) > '9' ) {
-                System.out.println("Not valid! Must contain digits!");
-                return inputInt(inputString(sc.nextLine()));
-            }
-        }
-        return Integer.parseInt(input);
-    }
-
-
-    public static BigDecimal inputDouble(String input, int scale) {
-        int dotInput = 0;
-        for (int i = 0; i < input.length(); i++) {
-            if ((input.charAt(i) < '0' | input.charAt(i) > '9') | input.charAt(i) == '.') {
-                if(input.charAt(i)=='.' & dotInput == 1){
-                    System.out.println("Not valid! Only one '.' allowed!");
-                    return inputDouble(inputString(sc.nextLine()),scale);
-                } else if(input.charAt(i)=='.') {
-                    dotInput++;
-                    continue;
-                }
-                System.out.println("Not valid! Must contain digits or/and '.'");
-                return inputDouble(inputString(sc.nextLine()),scale);
-            }
-        }
-        return BigDecimal.valueOf(Double.parseDouble(input)).setScale(scale, RoundingMode.HALF_UP);
-    }
-
-
     public static String validateEventCode(int eventCode) {
         if (eventCode>0 & eventCode<10){
             return "00" + eventCode;
@@ -124,46 +92,46 @@ public class TicketService {
             return String.valueOf(eventCode);
         } else {
             System.out.println("Not valid! Must be digits between 0 and 999!");
-            return validateEventCode(inputInt(inputString(sc.nextLine())));
+            return validateEventCode(inputValidator.inputInt());
         }
     }
 
 
-    public static LocalDateTime inputTime() {
+    public static ZonedDateTime inputTime() {
         System.out.println("Input Year:");
-        int year = inputInt(inputString(sc.nextLine()));
+        int year = inputValidator.inputInt();
         while(year<1970){
             System.out.println("Try again!");
-            year = inputInt(inputString(sc.nextLine()));
+            year = inputValidator.inputInt();
         }
         System.out.println("Input Month Number:");
-        int month = inputInt(inputString(sc.nextLine()));
+        int month = inputValidator.inputInt();
         while(month>12 || month<1){
             System.out.println("Try again!");
-            month = inputInt(inputString(sc.nextLine()));
+            month = inputValidator.inputInt();
         }
         System.out.println("Input Day Number:");
-        int day = inputInt(inputString(sc.nextLine()));
+        int day = inputValidator.inputInt();
         while(
                 ((day<1 || day>31) && (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12)) ||
                         ((day<1 || day>30) && (month == 4 || month == 6 || month == 9 || month == 11)) || ((day<1 || day>28) && month == 2)
         ){
             System.out.println("Try again!");
-            day = inputInt(inputString(sc.nextLine()));
+            day = inputValidator.inputInt();
         }
         System.out.println("Input hour:");
-        int hour = inputInt(inputString(sc.nextLine()));
+        int hour = inputValidator.inputInt();
         while(hour<0 || hour>23){
             System.out.println("Try again!");
-            hour = inputInt(inputString(sc.nextLine()));
+            hour = inputValidator.inputInt();
         }
         System.out.println("Input minutes:");
-        int minutes = inputInt(inputString(sc.nextLine()));
+        int minutes = inputValidator.inputInt();
         while(minutes<0 || minutes>59){
             System.out.println("Try again!");
-            minutes = inputInt(inputString(sc.nextLine()));
+            minutes = inputValidator.inputInt();
         }
-        return LocalDateTime.of(year, month, day, hour, minutes);
+        return ZonedDateTime.of(LocalDate.of(year, month, day), LocalTime.of(hour, minutes), ZoneId.systemDefault());
     }
 
 
@@ -191,7 +159,7 @@ public class TicketService {
     public static boolean isPromo(int input){
         if (input < 1 || input > 2) {
             System.out.println("Not valid! Input 1(True) or 2(False)");
-            return isPromo(inputInt(inputString(sc.nextLine())));
+            return isPromo(inputValidator.inputInt());
         } else return input == 1;
     }
 
