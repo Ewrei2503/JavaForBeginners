@@ -1,6 +1,6 @@
-package services;
+package by.yahor_kulesh.services;
 
-import model.Ticket;
+import by.yahor_kulesh.model.Ticket;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
