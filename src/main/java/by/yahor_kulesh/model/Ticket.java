@@ -28,10 +28,10 @@ public class Ticket {
         this.date = date;
     }
 
-    public Ticket(String concertHall, int eventCode, ZonedDateTime date, boolean isPromo, String sector, double backpackWeight, BigDecimal price) {
-        setConcertHall(concertHall);
-        setEventCode(eventCode);
-        this.date = date;
+    public Ticket(Ticket lim_ticket, boolean isPromo, String sector, double backpackWeight, BigDecimal price) {
+        setConcertHall(lim_ticket.getConcertHall());
+        setEventCode(Integer.parseInt(lim_ticket.getEventCode()));
+        this.date = lim_ticket.getDate();
         this.isPromo = isPromo;
         setSector(sector);
         this.backpackWeight = backpackWeight;
