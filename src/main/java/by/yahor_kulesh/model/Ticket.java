@@ -1,5 +1,8 @@
 package by.yahor_kulesh.model;
 
+import by.yahor_kulesh.exceptions.OutOfLimitsException;
+import by.yahor_kulesh.validators.InputValidator;
+
 import java.math.BigDecimal;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -19,20 +22,32 @@ public class Ticket {
 
     public Ticket() {}
 
-    public Ticket(String concertHall, String eventCode, ZonedDateTime date) {
-        this.concertHall = concertHall;
-        this.eventCode = eventCode;
+    public Ticket(String concertHall, int eventCode, ZonedDateTime date) {
+        setConcertHall(concertHall);
+        setEventCode(eventCode);
         this.date = date;
     }
 
-    public Ticket(String concertHall, String eventCode, ZonedDateTime date, boolean isPromo, Sector sector, double backpackWeight, BigDecimal price) {
-        this.concertHall = concertHall;
-        this.eventCode = eventCode;
+    public Ticket(String concertHall, int eventCode, ZonedDateTime date, boolean isPromo, String sector, double backpackWeight, BigDecimal price) {
+        setConcertHall(concertHall);
+        setEventCode(eventCode);
         this.date = date;
         this.isPromo = isPromo;
-        this.sector = sector;
+        setSector(sector);
         this.backpackWeight = backpackWeight;
         this.price = price;
+    }
+
+    public void setConcertHall(String concertHall) {
+        this.concertHall = validateStringLimits(concertHall, "Concert Hall", new char[][]{{'A','Z'}, {'a','z'}});
+    }
+
+    public void setEventCode(int eventCode) {
+        this.eventCode = validateEventCode(eventCode);
+    }
+
+    public void setSector(String sector) {
+        this.sector = Sector.valueOf(validateStringLimits(sector,"Sector" ,new char[][]{{'A','C'}, {'a','c'}}));
     }
 
     public UUID getId() {
@@ -71,6 +86,7 @@ public class Ticket {
         return price;
     }
 
+
     @Override
     public String toString() {
         return "Ticket Info:\n" +
@@ -84,5 +100,38 @@ public class Ticket {
                 ";\nWas bought: " + (this.getTicketCreationTime() == null? null: this.getTicketCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
                 ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
                 "$.\n\n\n";
+    }
+
+    public static String validateStringLimits(String input, String variable, char[][] limits){
+        int lim=0;
+        try {
+            for (int str = 0; str < input.length(); str++) {
+                for (char[] limit : limits) {
+                    if (input.charAt(str) >= limit[0] & input.charAt(str) <= limit[1]) {
+                        break;
+                    } else lim++;
+                }
+                if (lim > limits.length - 1) {
+                    throw new OutOfLimitsException(limits, variable);
+                } else lim = 0;
+            }
+        } catch (OutOfLimitsException e){
+            System.err.println(e.getMessage());
+            input = validateStringLimits(InputValidator.inputString(input.length()),variable,limits);
+        }
+        return input;
+    }
+
+    public static String validateEventCode(int eventCode) {
+        if (eventCode>0 & eventCode<10){
+            return "00" + eventCode;
+        }else if (eventCode > 9 & eventCode < 100) {
+            return "0" + eventCode;
+        } else if (eventCode > 100 & eventCode < 999) {
+            return String.valueOf(eventCode);
+        } else {
+            System.err.println("Event code is not valid! Must be digits between 0 and 999! Write again:");
+            return validateEventCode(InputValidator.inputInt());
+        }
     }
 }
