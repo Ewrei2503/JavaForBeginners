@@ -1,14 +1,18 @@
 package by.yahor_kulesh;
 
+import by.yahor_kulesh.model.Data;
 import by.yahor_kulesh.model.tickets.Ticket;
 import by.yahor_kulesh.services.TicketService;
 import by.yahor_kulesh.validators.InputValidator;
 
+import java.util.UUID;
 
-public class App {
+
+public class App extends Data {
 
     public static void main(String[] args) {
-        menu();
+        App app = new App();
+        System.out.println(app.id);
     }
 
     private static void menu() {
@@ -45,4 +49,8 @@ public class App {
     }
 
 
+    @Override
+    public UUID getId() {
+        return super.id;
+    }
 }
