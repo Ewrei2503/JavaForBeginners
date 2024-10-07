@@ -1,9 +1,6 @@
 package by.yahor_kulesh;
 
 import by.yahor_kulesh.model.Data;
-import by.yahor_kulesh.model.tickets.Ticket;
-import by.yahor_kulesh.services.TicketService;
-import by.yahor_kulesh.validators.InputValidator;
 
 import java.util.UUID;
 
@@ -11,11 +8,11 @@ import java.util.UUID;
 public class App extends Data {
 
     public static void main(String[] args) {
-        App app = new App();
-        System.out.println(app.id);
+
     }
 
-    private static void menu() {
+    /*private static void menu() {
+
         while(true) {
             System.out.println("""
                         Welcome to the Ticket Service!
@@ -46,7 +43,8 @@ public class App extends Data {
                 }
             }
         }
-    }
+
+    }*/
 
 
     @Override

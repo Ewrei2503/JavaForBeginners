@@ -98,4 +98,14 @@ public class InputValidator extends Data {
     public UUID getId() {
         return super.id;
     }
+
+
+
+    @Override
+    public String toString() {
+        return "InputValidator{" +
+                "id=" + id +
+                "} " + super.toString();
+    }
+
 }

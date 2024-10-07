@@ -12,71 +12,39 @@ import java.util.UUID;
 public class Ticket extends Data{
     private final ZonedDateTime ticketCreationTime = ZonedDateTime.now();
 
-    private String concertHall;
-    private String eventCode;
+
     private ZonedDateTime date;
-    private boolean isPromo;
-    private Sector sector;
-    private double backpackWeight;
-    private BigDecimal price;
+    private final BigDecimal price;
 
-    public Ticket() {}
-
-    public Ticket(String concertHall, int eventCode, ZonedDateTime date) {
-        setConcertHall(concertHall);
-        setEventCode(eventCode);
-        this.date = date;
+    public Ticket() {
+        this.date = null;
+        this.price = null;
     }
 
-    public Ticket(Ticket lim_ticket, boolean isPromo, String sector, double backpackWeight, BigDecimal price) {
-        setConcertHall(lim_ticket.getConcertHall());
-        setEventCode(Integer.parseInt(lim_ticket.getEventCode()));
-        this.date = lim_ticket.getDate();
-        this.isPromo = isPromo;
-        setSector(sector);
-        this.backpackWeight = backpackWeight;
+    public Ticket(ZonedDateTime date, BigDecimal price) {
+        this.date = date;
         this.price = price;
     }
 
-    public void setConcertHall(String concertHall) {
-        this.concertHall = validateStringLimits(concertHall, "Concert Hall", new char[][]{{'A','Z'}, {'a','z'}});
+    public Ticket(Ticket ticket) {
+        this.date = ticket.date;
+        this.price = ticket.price;
     }
 
-    public void setEventCode(int eventCode) {
-        this.eventCode = validateEventCode(eventCode);
+
+
+
+    public void setDate(ZonedDateTime date) {
+        this.date = date;
     }
 
-    public void setSector(String sector) {
-        this.sector = Sector.valueOf(validateStringLimits(sector,"Sector" ,new char[][]{{'A','C'}, {'a','c'}}));
-    }
+
+
+
 
     @Override
     public UUID getId() {
         return super.id;
-    }
-
-    public String getConcertHall() {
-        return concertHall;
-    }
-
-    public String getEventCode() {
-        return eventCode;
-    }
-
-    public ZonedDateTime getDate() {
-        return date;
-    }
-
-    public boolean isPromo() {
-        return isPromo;
-    }
-
-    public Sector getSector() {
-        return sector;
-    }
-
-    public double getBackpackWeight() {
-        return backpackWeight;
     }
 
     public ZonedDateTime getTicketCreationTime() {
@@ -85,23 +53,28 @@ public class Ticket extends Data{
 
     public BigDecimal getPrice() {
         return price;
+
     }
+
+    public ZonedDateTime getDate() {
+        return date;
+    }
+
+
+
 
 
     @Override
-    public String toString() {
+    public String print() {
         return "Ticket Info:\n" +
                 "ID: " + this.getId() +
-                ";\nConcert Hall: " + this.getConcertHall() +
-                ";\nEvent Code: " + this.getEventCode() +
-                ";\nDate: " + (this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
-                ";\nPromo ticket: " + this.isPromo() +
-                ";\nSector: " + this.getSector() +
-                ";\nBackpack weight allowed: " + this.getBackpackWeight() +
                 ";\nWas bought: " + (this.getTicketCreationTime() == null? null: this.getTicketCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
+                ";\nDate of event: " + (this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
+
                 ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
                 "$.\n\n\n";
     }
+
 
     public static String validateStringLimits(String input, String variable, char[][] limits){
         int lim=0;
@@ -135,4 +108,15 @@ public class Ticket extends Data{
             return validateEventCode(InputValidator.inputInt());
         }
     }
+
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "ticketCreationTime=" + ticketCreationTime +
+                ", date=" + date +
+                ", price=" + price +
+                "} " + super.toString();
+    }
+
 }
