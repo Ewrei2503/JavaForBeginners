@@ -12,6 +12,7 @@ import java.util.UUID;
 public class Ticket extends Data{
     private final ZonedDateTime ticketCreationTime = ZonedDateTime.now();
 
+
     private ZonedDateTime date;
     private final BigDecimal price;
 
@@ -40,6 +41,7 @@ public class Ticket extends Data{
 
 
 
+
     @Override
     public UUID getId() {
         return super.id;
@@ -51,11 +53,13 @@ public class Ticket extends Data{
 
     public BigDecimal getPrice() {
         return price;
+
     }
 
     public ZonedDateTime getDate() {
         return date;
     }
+
 
 
 
@@ -66,10 +70,10 @@ public class Ticket extends Data{
                 "ID: " + this.getId() +
                 ";\nWas bought: " + (this.getTicketCreationTime() == null? null: this.getTicketCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
                 ";\nDate of event: " + (this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
+
                 ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
                 "$.\n\n\n";
     }
-
 
 
     public static String validateStringLimits(String input, String variable, char[][] limits){
@@ -92,8 +96,6 @@ public class Ticket extends Data{
         return input;
     }
 
-
-
     public static String validateEventCode(int eventCode) {
         if (eventCode>0 & eventCode<10){
             return "00" + eventCode;
@@ -107,6 +109,7 @@ public class Ticket extends Data{
         }
     }
 
+
     @Override
     public String toString() {
         return "Ticket{" +
@@ -115,4 +118,5 @@ public class Ticket extends Data{
                 ", price=" + price +
                 "} " + super.toString();
     }
+
 }

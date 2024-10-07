@@ -11,10 +11,12 @@ public abstract class Data {
         return "print content in console";
     }
 
+
     @Override
     public String toString() {
         return "Data{" +
                 "id=" + id +
                 '}';
     }
+
 }

@@ -1,11 +1,13 @@
 package by.yahor_kulesh.services;
 
 import by.yahor_kulesh.model.Data;
+
 import java.util.UUID;
 
 public class TicketService extends Data {
 
     /*public static Ticket createLimitedTicket() {
+
         System.out.println("Input Concert hall:");
         String concertHall = InputValidator.inputString(10);
         System.out.println("Input Event code:");
@@ -34,10 +36,12 @@ public class TicketService extends Data {
     }
 
 
+
     @Override
     public String toString() {
         return "TicketService{" +
                 "id=" + id +
                 "} " + super.toString();
+
     }
 }
