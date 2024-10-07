@@ -12,25 +12,36 @@ import java.util.UUID;
 public class Ticket extends Data{
     private final ZonedDateTime ticketCreationTime = ZonedDateTime.now();
 
-    private String concertHall;
-    private String eventCode;
+    private final String concertHall;
+    private final String eventCode;
     private ZonedDateTime date;
-    private boolean isPromo;
+    private final boolean isPromo;
     private Sector sector;
-    private double backpackWeight;
-    private BigDecimal price;
+    private final double backpackWeight;
+    private final BigDecimal price;
 
-    public Ticket() {}
+    public Ticket() {
+        this.concertHall = "";
+        this.eventCode = "";
+        this.date = null;
+        this.isPromo = false;
+        this.sector = null;
+        this.backpackWeight = 0;
+        this.price = null;
+    }
 
     public Ticket(String concertHall, int eventCode, ZonedDateTime date) {
-        setConcertHall(concertHall);
-        setEventCode(eventCode);
+        this.concertHall = validateStringLimits(concertHall, "Concert Hall", new char[][]{{'A','Z'}, {'a','z'}});
+        this.eventCode = validateEventCode(eventCode);
         this.date = date;
+        this.isPromo = false;
+        this.backpackWeight = 0;
+        this.price = null;
     }
 
     public Ticket(Ticket lim_ticket, boolean isPromo, String sector, double backpackWeight, BigDecimal price) {
-        setConcertHall(lim_ticket.getConcertHall());
-        setEventCode(Integer.parseInt(lim_ticket.getEventCode()));
+        this.concertHall = validateStringLimits(lim_ticket.getConcertHall(), "Concert Hall", new char[][]{{'A','Z'}, {'a','z'}});
+        this.eventCode = validateEventCode(Integer.parseInt(lim_ticket.getEventCode()));
         this.date = lim_ticket.getDate();
         this.isPromo = isPromo;
         setSector(sector);
@@ -38,17 +49,16 @@ public class Ticket extends Data{
         this.price = price;
     }
 
-    public void setConcertHall(String concertHall) {
-        this.concertHall = validateStringLimits(concertHall, "Concert Hall", new char[][]{{'A','Z'}, {'a','z'}});
-    }
-
-    public void setEventCode(int eventCode) {
-        this.eventCode = validateEventCode(eventCode);
-    }
 
     public void setSector(String sector) {
         this.sector = Sector.valueOf(validateStringLimits(sector,"Sector" ,new char[][]{{'A','C'}, {'a','c'}}));
     }
+
+    public void setDate(ZonedDateTime date) {
+        this.date = date;
+    }
+
+
 
     @Override
     public UUID getId() {
@@ -88,6 +98,7 @@ public class Ticket extends Data{
     }
 
 
+
     @Override
     public String toString() {
         return "Ticket Info:\n" +
@@ -102,6 +113,8 @@ public class Ticket extends Data{
                 ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
                 "$.\n\n\n";
     }
+
+
 
     public static String validateStringLimits(String input, String variable, char[][] limits){
         int lim=0;
@@ -122,6 +135,8 @@ public class Ticket extends Data{
         }
         return input;
     }
+
+
 
     public static String validateEventCode(int eventCode) {
         if (eventCode>0 & eventCode<10){
