@@ -8,6 +8,10 @@ import by.yahor_kulesh.validators.InputValidator;
 public class App {
 
     public static void main(String[] args) {
+        menu();
+    }
+
+    private static void menu() {
         while(true) {
             System.out.println("""
                         Welcome to the Ticket Service!
@@ -39,8 +43,6 @@ public class App {
             }
         }
     }
-
-
 
 
 }
