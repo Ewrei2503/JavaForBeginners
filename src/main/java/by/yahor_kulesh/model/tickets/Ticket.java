@@ -1,6 +1,7 @@
 package by.yahor_kulesh.model.tickets;
 
 import by.yahor_kulesh.exceptions.OutOfLimitsException;
+import by.yahor_kulesh.model.Data;
 import by.yahor_kulesh.validators.InputValidator;
 
 import java.math.BigDecimal;
@@ -8,8 +9,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
-public class Ticket {
-    private final UUID id = UUID.randomUUID();
+public class Ticket extends Data{
     private final ZonedDateTime ticketCreationTime = ZonedDateTime.now();
 
     private String concertHall;
@@ -50,8 +50,9 @@ public class Ticket {
         this.sector = Sector.valueOf(validateStringLimits(sector,"Sector" ,new char[][]{{'A','C'}, {'a','c'}}));
     }
 
+    @Override
     public UUID getId() {
-        return id;
+        return super.id;
     }
 
     public String getConcertHall() {

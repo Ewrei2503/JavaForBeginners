@@ -1,5 +1,6 @@
 package by.yahor_kulesh.services;
 
+import by.yahor_kulesh.model.Data;
 import by.yahor_kulesh.model.tickets.Ticket;
 import by.yahor_kulesh.validators.InputValidator;
 
@@ -7,8 +8,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.UUID;
 
-public class TicketService {
+public class TicketService extends Data {
 
     public static Ticket createLimitedTicket() {
         System.out.println("Input Concert hall:");
@@ -33,4 +35,8 @@ public class TicketService {
         return new Ticket(lim_ticket, isPromo, sector, weight, price);
     }
 
+    @Override
+    public UUID getId() {
+        return null;
+    }
 }

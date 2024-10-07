@@ -1,6 +1,7 @@
 package by.yahor_kulesh.validators;
 
 import by.yahor_kulesh.exceptions.StringSizeException;
+import by.yahor_kulesh.model.Data;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -9,9 +10,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.UUID;
 
 
-public class InputValidator {
+public class InputValidator extends Data {
 
     private static final Scanner sc = new Scanner(System.in);
 
@@ -92,4 +94,8 @@ public class InputValidator {
     }
 
 
+    @Override
+    public UUID getId() {
+        return super.id;
+    }
 }
