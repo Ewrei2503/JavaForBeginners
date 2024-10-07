@@ -1,6 +1,6 @@
 package by.yahor_kulesh.services;
 
-import by.yahor_kulesh.model.Ticket;
+import by.yahor_kulesh.model.tickets.Ticket;
 import by.yahor_kulesh.validators.InputValidator;
 
 import java.math.BigDecimal;

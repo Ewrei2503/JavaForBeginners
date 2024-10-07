@@ -1,4 +1,4 @@
-package by.yahor_kulesh.model;
+package by.yahor_kulesh.model.tickets;
 
 import by.yahor_kulesh.exceptions.OutOfLimitsException;
 import by.yahor_kulesh.validators.InputValidator;
