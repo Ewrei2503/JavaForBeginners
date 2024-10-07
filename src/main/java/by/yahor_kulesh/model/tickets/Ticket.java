@@ -12,47 +12,26 @@ import java.util.UUID;
 public class Ticket extends Data{
     private final ZonedDateTime ticketCreationTime = ZonedDateTime.now();
 
-    private final String concertHall;
-    private final String eventCode;
     private ZonedDateTime date;
-    private final boolean isPromo;
-    private Sector sector;
-    private final double backpackWeight;
     private final BigDecimal price;
 
     public Ticket() {
-        this.concertHall = "";
-        this.eventCode = "";
         this.date = null;
-        this.isPromo = false;
-        this.sector = null;
-        this.backpackWeight = 0;
         this.price = null;
     }
 
-    public Ticket(String concertHall, int eventCode, ZonedDateTime date) {
-        this.concertHall = validateStringLimits(concertHall, "Concert Hall", new char[][]{{'A','Z'}, {'a','z'}});
-        this.eventCode = validateEventCode(eventCode);
+    public Ticket(ZonedDateTime date, BigDecimal price) {
         this.date = date;
-        this.isPromo = false;
-        this.backpackWeight = 0;
-        this.price = null;
-    }
-
-    public Ticket(Ticket lim_ticket, boolean isPromo, String sector, double backpackWeight, BigDecimal price) {
-        this.concertHall = validateStringLimits(lim_ticket.getConcertHall(), "Concert Hall", new char[][]{{'A','Z'}, {'a','z'}});
-        this.eventCode = validateEventCode(Integer.parseInt(lim_ticket.getEventCode()));
-        this.date = lim_ticket.getDate();
-        this.isPromo = isPromo;
-        setSector(sector);
-        this.backpackWeight = backpackWeight;
         this.price = price;
     }
 
-
-    public void setSector(String sector) {
-        this.sector = Sector.valueOf(validateStringLimits(sector,"Sector" ,new char[][]{{'A','C'}, {'a','c'}}));
+    public Ticket(Ticket ticket) {
+        this.date = ticket.date;
+        this.price = ticket.price;
     }
+
+
+
 
     public void setDate(ZonedDateTime date) {
         this.date = date;
@@ -60,33 +39,10 @@ public class Ticket extends Data{
 
 
 
+
     @Override
     public UUID getId() {
         return super.id;
-    }
-
-    public String getConcertHall() {
-        return concertHall;
-    }
-
-    public String getEventCode() {
-        return eventCode;
-    }
-
-    public ZonedDateTime getDate() {
-        return date;
-    }
-
-    public boolean isPromo() {
-        return isPromo;
-    }
-
-    public Sector getSector() {
-        return sector;
-    }
-
-    public double getBackpackWeight() {
-        return backpackWeight;
     }
 
     public ZonedDateTime getTicketCreationTime() {
@@ -97,19 +53,19 @@ public class Ticket extends Data{
         return price;
     }
 
+    public ZonedDateTime getDate() {
+        return date;
+    }
+
+
 
 
     @Override
-    public String toString() {
+    public String print() {
         return "Ticket Info:\n" +
                 "ID: " + this.getId() +
-                ";\nConcert Hall: " + this.getConcertHall() +
-                ";\nEvent Code: " + this.getEventCode() +
-                ";\nDate: " + (this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
-                ";\nPromo ticket: " + this.isPromo() +
-                ";\nSector: " + this.getSector() +
-                ";\nBackpack weight allowed: " + this.getBackpackWeight() +
                 ";\nWas bought: " + (this.getTicketCreationTime() == null? null: this.getTicketCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
+                ";\nDate of event: " + (this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
                 ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
                 "$.\n\n\n";
     }
@@ -149,5 +105,14 @@ public class Ticket extends Data{
             System.err.println("Event code is not valid! Must be digits between 0 and 999! Write again:");
             return validateEventCode(InputValidator.inputInt());
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "ticketCreationTime=" + ticketCreationTime +
+                ", date=" + date +
+                ", price=" + price +
+                "} " + super.toString();
     }
 }

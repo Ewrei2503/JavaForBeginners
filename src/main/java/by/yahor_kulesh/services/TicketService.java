@@ -1,18 +1,11 @@
 package by.yahor_kulesh.services;
 
 import by.yahor_kulesh.model.Data;
-import by.yahor_kulesh.model.tickets.Ticket;
-import by.yahor_kulesh.validators.InputValidator;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
 public class TicketService extends Data {
 
-    public static Ticket createLimitedTicket() {
+    /*public static Ticket createLimitedTicket() {
         System.out.println("Input Concert hall:");
         String concertHall = InputValidator.inputString(10);
         System.out.println("Input Event code:");
@@ -21,8 +14,8 @@ public class TicketService extends Data {
         LocalDateTime time = InputValidator.inputTime();
         return new Ticket(concertHall, eventCode, ZonedDateTime.of(time.toLocalDate(),time.toLocalTime(), ZoneId.systemDefault()));
     }
-
-    public static Ticket createFullTicket() {
+*/
+    /*public static Ticket createFullTicket() {
         Ticket lim_ticket = createLimitedTicket();
         System.out.println("Is it Promo?:\n1.True\n0.False");
         boolean isPromo = InputValidator.inputBoolean();
@@ -33,10 +26,18 @@ public class TicketService extends Data {
         System.out.println("Input price:");
         BigDecimal price = InputValidator.inputBigDecimal(2);
         return new Ticket(lim_ticket, isPromo, sector, weight, price);
-    }
+    }*/
 
     @Override
     public UUID getId() {
         return null;
+    }
+
+
+    @Override
+    public String toString() {
+        return "TicketService{" +
+                "id=" + id +
+                "} " + super.toString();
     }
 }
