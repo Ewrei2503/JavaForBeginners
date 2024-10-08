@@ -7,16 +7,25 @@ import by.yahor_kulesh.validators.InputValidator;
 import java.math.BigDecimal;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.UUID;
 
-public class Ticket extends Data{
+public class Ticket extends Data {
     private final ZonedDateTime ticketCreationTime = ZonedDateTime.now();
-
-
-    private ZonedDateTime date;
     private final BigDecimal price;
 
+    private ZonedDateTime date;
+
+
+
+
     public Ticket() {
+        this.date = null;
+        this.price = null;
+    }
+
+    public Ticket(UUID id) {
+        super.setId(id);
         this.date = null;
         this.price = null;
     }
@@ -27,6 +36,7 @@ public class Ticket extends Data{
     }
 
     public Ticket(Ticket ticket) {
+        super.setId(ticket.getId());
         this.date = ticket.date;
         this.price = ticket.price;
     }
@@ -38,13 +48,8 @@ public class Ticket extends Data{
         this.date = date;
     }
 
-
-
-
-
-    @Override
-    public UUID getId() {
-        return super.id;
+    public ZonedDateTime getDate() {
+        return date;
     }
 
     public ZonedDateTime getTicketCreationTime() {
@@ -53,13 +58,32 @@ public class Ticket extends Data{
 
     public BigDecimal getPrice() {
         return price;
-
     }
 
-    public ZonedDateTime getDate() {
-        return date;
+
+    /**I've deleted from here ticket creation time,
+     * because it will be always false
+     * */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Ticket ticket)) return false;
+        return Objects.equals(this.getId(), ticket.getId()) && Objects.equals(price, ticket.price) && Objects.equals(date, ticket.date);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.getId(), ticketCreationTime, price, date);
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "ticketCreationTime=" + ticketCreationTime +
+                ", date=" + date +
+                ", price=" + price +
+                "} " + super.toString();
+    }
 
 
 
@@ -73,6 +97,13 @@ public class Ticket extends Data{
 
                 ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
                 "$.\n\n\n";
+    }
+
+
+
+
+    public void share(String phone){
+        System.out.println(this.getClass().getSimpleName() + " was send to " + phone + "\n");
     }
 
 
@@ -110,13 +141,6 @@ public class Ticket extends Data{
     }
 
 
-    @Override
-    public String toString() {
-        return "Ticket{" +
-                "ticketCreationTime=" + ticketCreationTime +
-                ", date=" + date +
-                ", price=" + price +
-                "} " + super.toString();
-    }
+
 
 }

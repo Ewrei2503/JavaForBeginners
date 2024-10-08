@@ -1,54 +1,37 @@
 package by.yahor_kulesh;
 
 import by.yahor_kulesh.model.Data;
+import by.yahor_kulesh.model.Printable;
+import by.yahor_kulesh.model.tickets.*;
+import by.yahor_kulesh.model.users.*;
+import by.yahor_kulesh.validators.InputValidator;
 
-import java.util.UUID;
+import java.math.BigDecimal;
+import java.time.ZoneId;
 
 
-public class App extends Data {
+public class App extends Data implements Printable {
 
     public static void main(String[] args) {
-
+        Client client = new Client();
+        client.getTicket(new BusTicket(567.89));
+        client.getTicket(new ConcertTicket("Concert",567,true, Sector.B.toString()));
+        client.getTicket(new Ticket(InputValidator.inputTime("202502030405").atZone(ZoneId.systemDefault()), BigDecimal.valueOf(1234.567)));
+        System.out.println(client.print());
+        Admin admin = new Admin();
+        System.out.println(admin.print());
+        Ticket ticket = new Ticket(InputValidator.inputTime("202501010101").atZone(ZoneId.systemDefault()), BigDecimal.valueOf(1234.123));
+        System.out.println(ticket.print());
+        ConcertTicket concert = new ConcertTicket(ticket,"Hall",123,false, Sector.A.toString());
+        System.out.println(concert.print());
+        BusTicket busTicket = new BusTicket(ticket,123.1237);
+        System.out.println(busTicket.print());
+        ticket.share("+375291234567");
+        busTicket.share("+375291234567");
+        concert.share("e.k.02@out.com");
+        concert.share("e.k.02@out.com", "+375292283213");
+        admin.checkTicket(new BusTicket());
+        admin.checkTicket(concert);
     }
 
-    /*private static void menu() {
-
-        while(true) {
-            System.out.println("""
-                        Welcome to the Ticket Service!
-                        1.Create empty Ticket
-                        2.Create limited ticket([Concert hall], [event code] and [time] required)
-                        3.Create full ticket
-                        0.Exit
-                        """
-            );
-            switch (InputValidator.inputInt()){
-                case 1:{
-                    System.out.println(new Ticket());
-                    break;
-                }
-                case 2: {
-                    System.out.println(TicketService.createLimitedTicket());
-                    break;
-                }
-                case 3: {
-                    System.out.println(TicketService.createFullTicket());
-                    break;
-                }
-                case 0: {
-                    return;
-                }
-                default: {
-                    System.out.println("Try again!");
-                }
-            }
-        }
-
-    }*/
-
-
-    @Override
-    public UUID getId() {
-        return super.id;
-    }
 }
