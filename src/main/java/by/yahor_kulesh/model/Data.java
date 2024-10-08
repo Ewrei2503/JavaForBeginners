@@ -2,15 +2,16 @@ package by.yahor_kulesh.model;
 
 import java.util.UUID;
 
-public abstract class Data {
-    protected final UUID id = UUID.randomUUID();
+public abstract class Data implements Printable{
+    protected UUID id = UUID.randomUUID();
 
-    public abstract UUID getId();
-
-    public String print(){
-        return "print content in console";
+    public UUID getId(){
+        return id;
     }
 
+    public void setId(UUID id){
+        this.id = id;
+    }
 
     @Override
     public String toString() {
