@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.time.ZoneId;
 
 
-public class App extends Data implements Printable {
+public class App extends Data {
 
     public static void main(String[] args) {
         Client client = new Client();
