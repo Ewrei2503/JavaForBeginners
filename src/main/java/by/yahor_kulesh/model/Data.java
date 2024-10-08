@@ -3,7 +3,7 @@ package by.yahor_kulesh.model;
 import java.util.UUID;
 
 public abstract class Data implements Printable{
-    protected UUID id = UUID.randomUUID();
+    private UUID id = UUID.randomUUID();
 
     public UUID getId(){
         return id;
