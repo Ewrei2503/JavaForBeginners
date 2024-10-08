@@ -1,12 +1,19 @@
 package by.yahor_kulesh.model.tickets;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+import java.util.UUID;
 
 public class BusTicket extends Ticket{
     private final double backpackWeight;
 
     public BusTicket() {
         super();
+        this.backpackWeight = 0;
+    }
+
+    public BusTicket(UUID id) {
+        super(id);
         this.backpackWeight = 0;
     }
 
@@ -21,6 +28,20 @@ public class BusTicket extends Ticket{
 
     public double getBackpackWeight() {
         return backpackWeight;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BusTicket busTicket)) return false;
+        if (!super.equals(o)) return false;
+        return Double.compare(backpackWeight, busTicket.backpackWeight) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), backpackWeight);
     }
 
     @Override

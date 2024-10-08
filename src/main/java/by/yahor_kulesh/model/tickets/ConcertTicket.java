@@ -1,17 +1,32 @@
 package by.yahor_kulesh.model.tickets;
 
+import by.yahor_kulesh.model.Printable;
+
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+import java.util.UUID;
 
 public class ConcertTicket extends Ticket {
 
     private final String concertHall;
     private final String eventCode;
     private final boolean isPromo;
+
     private Sector sector;
+
+
 
 
     public ConcertTicket() {
         super();
+        this.concertHall = "";
+        this.eventCode = "";
+        this.isPromo = false;
+        this.sector = null;
+    }
+
+    public ConcertTicket(UUID id) {
+        super(id);
         this.concertHall = "";
         this.eventCode = "";
         this.isPromo = false;
@@ -34,8 +49,15 @@ public class ConcertTicket extends Ticket {
         setSector(sector);
     }
 
+
+
+
     public void setSector(String sector) {
         this.sector = Sector.valueOf(validateStringLimits(sector,"Sector" ,new char[][]{{'A','C'}, {'a','c'}}));
+    }
+
+    public Sector getSector() {
+        return sector;
     }
 
     public String getConcertHall() {
@@ -50,8 +72,18 @@ public class ConcertTicket extends Ticket {
         return isPromo;
     }
 
-    public Sector getSector() {
-        return sector;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ConcertTicket that)) return false;
+        if (!super.equals(o)) return false;
+        return isPromo == that.isPromo && Objects.equals(concertHall, that.concertHall) && Objects.equals(eventCode, that.eventCode) && sector == that.sector;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), concertHall, eventCode, isPromo, sector);
     }
 
     @Override
@@ -62,6 +94,16 @@ public class ConcertTicket extends Ticket {
                 ", isPromo=" + isPromo +
                 ", sector=" + sector +
                 "} " + super.toString();
+    }
+
+
+    @Override
+    public void share(String email) {
+        System.out.println("ConcertTicket was send to the next email: " + email + "\n");
+    }
+
+    public void share(String email, String phoneNumber) {
+        System.out.println("ConcertTicket was send to the next email - " + email + ", and phone - " + phoneNumber + "\n");
     }
 
     @Override
