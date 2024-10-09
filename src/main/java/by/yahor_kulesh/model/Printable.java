@@ -1,7 +1,7 @@
 package by.yahor_kulesh.model;
 
 public interface Printable {
-    default String print(){
-        return this.toString();
+    default void print(){
+	    System.out.println(this);
     }
 }

@@ -11,11 +11,11 @@ public class Client extends User {
     public void getTicket(Ticket ticket) {
         System.out.println("Client got ticket:" + ticket.getId() + "\n");
         tickets.add(ticket);
-        this.print();
+
     }
 
     @Override
-    public String print() {
-        return "ID: " + this.getId() + "\nRole: " + this.printRole() + "\nTickets: " +  tickets.size() + "\n\n";
+    public void print() {
+	    System.out.println("ID: " + this.getId() + "\nRole: " + this.printRole() + "\nTickets: " +  tickets.size() + "\n\n");
     }
 }
