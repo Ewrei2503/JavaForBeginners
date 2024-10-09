@@ -14,7 +14,7 @@ public class Admin extends User {
     }
 
     @Override
-    public String print() {
-        return "ID: " + this.getId() + "\nRole: " + this.printRole() + "\n\n\n";
+    public void print() {
+	    System.out.println("ID: " + this.getId() + "\nRole: " + this.printRole() + "\n\n\n");
     }
 }

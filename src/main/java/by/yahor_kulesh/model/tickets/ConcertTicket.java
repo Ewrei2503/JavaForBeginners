@@ -1,7 +1,5 @@
 package by.yahor_kulesh.model.tickets;
 
-import by.yahor_kulesh.model.Printable;
-
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.UUID;
@@ -107,8 +105,8 @@ public class ConcertTicket extends Ticket {
     }
 
     @Override
-    public String print() {
-        return "Concert ticket Info:\n" +
+    public void print() {
+	    System.out.println("Concert ticket Info:\n" +
                 "ID: " + this.getId() +
                 ";\nConcert Hall: " + this.getConcertHall() +
                 ";\nEvent Code: " + this.getEventCode() +
@@ -117,6 +115,6 @@ public class ConcertTicket extends Ticket {
                 ";\nSector: " + this.getSector() +
                 ";\nWas bought: " + (this.getTicketCreationTime() == null? null: this.getTicketCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
                 ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
-                "$.\n\n\n";
+                "$.\n\n\n");
     }
 }

@@ -89,14 +89,14 @@ public class Ticket extends Data {
 
 
     @Override
-    public String print() {
-        return "Ticket Info:\n" +
+    public void print() {
+	    System.out.println("Ticket Info:\n" +
                 "ID: " + this.getId() +
                 ";\nWas bought: " + (this.getTicketCreationTime() == null? null: this.getTicketCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
                 ";\nDate of event: " + (this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
 
                 ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
-                "$.\n\n\n";
+                "$.\n\n\n");
     }
 
 
