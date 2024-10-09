@@ -107,6 +107,13 @@ public class Ticket extends Data {
     }
 
 
+
+
+    public void share(String phone){
+        System.out.println(this.getClass().getSimpleName() + " was send to " + phone + "\n");
+    }
+
+
     public static String validateStringLimits(String input, String variable, char[][] limits){
         int lim=0;
         try {
