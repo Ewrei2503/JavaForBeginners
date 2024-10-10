@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.time.ZoneId;
 
 public class TicketService extends Data{
-	public static void applicationMethod() {
+	public static void testTicketService() {
 		Client client = new Client();
 		client.getTicket(new BusTicket(567.89));
 		client.getTicket(new ConcertTicket("Concert",567,true, Sector.B.toString()));

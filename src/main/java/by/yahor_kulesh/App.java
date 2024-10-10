@@ -9,7 +9,7 @@ import by.yahor_kulesh.services.TicketService;
 public class App extends Data {
 
     public static void main(String[] args) {
-	    TicketService.applicationMethod();
+	    TicketService.testTicketService();
     }
 
 }
