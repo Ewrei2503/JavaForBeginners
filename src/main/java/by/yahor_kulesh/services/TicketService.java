@@ -1,36 +1,37 @@
 package by.yahor_kulesh.services;
 
-import by.yahor_kulesh.model.Ticket;
+import by.yahor_kulesh.model.Data;
+import by.yahor_kulesh.model.tickets.BusTicket;
+import by.yahor_kulesh.model.tickets.ConcertTicket;
+import by.yahor_kulesh.model.tickets.Sector;
+import by.yahor_kulesh.model.tickets.Ticket;
+import by.yahor_kulesh.model.users.Admin;
+import by.yahor_kulesh.model.users.Client;
 import by.yahor_kulesh.validators.InputValidator;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
-public class TicketService {
-
-    public static Ticket createLimitedTicket() {
-        System.out.println("Input Concert hall:");
-        String concertHall = InputValidator.inputString(10);
-        System.out.println("Input Event code:");
-        int eventCode = InputValidator.inputInt();
-        System.out.println("Input Event time:");
-        LocalDateTime time = InputValidator.inputTime();
-        return new Ticket(concertHall, eventCode, ZonedDateTime.of(time.toLocalDate(),time.toLocalTime(), ZoneId.systemDefault()));
-    }
-
-    public static Ticket createFullTicket() {
-        Ticket lim_ticket = createLimitedTicket();
-        System.out.println("Is it Promo?:\n1.True\n0.False");
-        boolean isPromo = InputValidator.inputBoolean();
-        System.out.println("Input sector:");
-        String sector = InputValidator.inputString(1).toUpperCase();
-        System.out.println("Input allowed backpack weight:");
-        double weight = InputValidator.inputBigDecimal(3).doubleValue();
-        System.out.println("Input price:");
-        BigDecimal price = InputValidator.inputBigDecimal(2);
-        return new Ticket(lim_ticket, isPromo, sector, weight, price);
-    }
-
+public class TicketService extends Data{
+	public static void testTicketService() {
+		Client client = new Client();
+		client.getTicket(new BusTicket(567.89));
+		client.getTicket(new ConcertTicket("Concert",567,true, Sector.B.toString()));
+		client.getTicket(new Ticket(InputValidator.inputTime("202502030405").atZone(ZoneId.systemDefault()), BigDecimal.valueOf(1234.567)));
+		client.print();
+		Admin admin = new Admin();
+		admin.print();
+		Ticket ticket = new Ticket(InputValidator.inputTime("202501010101").atZone(ZoneId.systemDefault()), BigDecimal.valueOf(1234.123));
+		ticket.print();
+		ConcertTicket concert = new ConcertTicket(ticket,"Hall",123,false, Sector.A.toString());
+		concert.print();
+		BusTicket busTicket = new BusTicket(ticket,123.1237);
+		busTicket.print();
+		ticket.share("+375291234567");
+		busTicket.share("+375291234567");
+		concert.share("e.k.02@out.com");
+		concert.share("e.k.02@out.com", "+375292283213");
+		admin.checkTicket(new BusTicket());
+		admin.checkTicket(concert);
+	}
 }

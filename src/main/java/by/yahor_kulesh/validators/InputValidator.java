@@ -1,17 +1,19 @@
 package by.yahor_kulesh.validators;
 
 import by.yahor_kulesh.exceptions.StringSizeException;
+import by.yahor_kulesh.model.Data;
+import by.yahor_kulesh.model.Printable;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.*;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 
-public class InputValidator {
+public class InputValidator extends Data implements Printable {
 
     private static final Scanner sc = new Scanner(System.in);
 
@@ -91,5 +93,21 @@ public class InputValidator {
         return localDateTime;
     }
 
+    public static LocalDateTime inputTime(String input){
+        LocalDateTime localDateTime;
+        try{
+            localDateTime = LocalDateTime.parse(input, DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
+            if(localDateTime.isBefore(LocalDateTime.now())){
+                throw new InputMismatchException("You trying to buy ticket in the past!");
+            }
+        } catch(DateTimeParseException e){
+            System.err.println("Not valid! Write time of event in YYYYMMDDHHmm format!");
+            localDateTime = inputTime();
+        } catch(InputMismatchException e){
+            System.err.println(e.getMessage());
+            localDateTime = inputTime();
+        }
+        return localDateTime;
+    }
 
 }
