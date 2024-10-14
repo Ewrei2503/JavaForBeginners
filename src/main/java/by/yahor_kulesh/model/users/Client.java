@@ -3,7 +3,6 @@ package by.yahor_kulesh.model.users;
 import by.yahor_kulesh.model.tickets.Ticket;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 public class Client extends User {
@@ -19,7 +18,7 @@ public class Client extends User {
     public boolean equals(Object o) {
         if(this == o) return true;
         if(!(o instanceof Client client)) return false;
-        return Objects.equals(tickets, client.tickets) && super.equals(o);
+        return super.equals(o);
     }
 
     @Override
