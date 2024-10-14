@@ -1,12 +1,16 @@
 package by.yahor_kulesh.services;
 
 import by.yahor_kulesh.model.Data;
+import by.yahor_kulesh.model.Printable;
 import by.yahor_kulesh.model.tickets.BusTicket;
 import by.yahor_kulesh.model.tickets.ConcertTicket;
 import by.yahor_kulesh.model.tickets.Sector;
 import by.yahor_kulesh.model.tickets.Ticket;
 import by.yahor_kulesh.model.users.Admin;
 import by.yahor_kulesh.model.users.Client;
+import by.yahor_kulesh.model.users.User;
+import by.yahor_kulesh.repositories.TicketRepo;
+import by.yahor_kulesh.repositories.UserRepo;
 import by.yahor_kulesh.validators.InputValidator;
 
 import java.math.BigDecimal;
@@ -33,5 +37,39 @@ public class TicketService extends Data{
 		concert.share("e.k.02@out.com", "+375292283213");
 		admin.checkTicket(new BusTicket());
 		admin.checkTicket(concert);
-	}
+
+        try{
+            testTicketRepo();
+        }catch(IndexOutOfBoundsException e){
+            System.err.println(e.getMessage());
+        }
+        testUserRepo(client);
+    }
+
+    private static void testUserRepo(Client client) {
+        User u2 = new Client();
+        u2.setId(client.getId());
+        System.out.println("\n\n\nu2 user is equal to client: " + u2.equals(client));
+
+        UserRepo userRepo = new UserRepo();
+        System.out.println("Result of inputting client value:" + userRepo.add(client));
+        System.out.println("Result of input similar as client value:" + userRepo.add(u2));
+        System.out.println("User repo contains u2 or client:" + userRepo.contains(u2));
+        System.out.println("Result of input other value:" + userRepo.add(new Admin()) + "\n\n\n");
+        System.out.println("----------------------------------");
+        userRepo.iterate(Printable::print);
+        System.out.println("User repo value was removed: " + !userRepo.remove(u2));
+        System.out.println("----------------------------------");
+        userRepo.iterate(Printable::print);
+    }
+
+    private static void testTicketRepo() {
+        TicketRepo ticketRepo = new TicketRepo();
+        for(int i = 0;i<13;i++){
+            ticketRepo.add(new Ticket());
+        }
+        System.out.println(ticketRepo.getByIndex(11));
+        ticketRepo.removeByIndex(5);
+        System.out.println(ticketRepo.getByIndex(10));
+    }
 }
