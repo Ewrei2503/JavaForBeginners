@@ -9,7 +9,7 @@ import by.yahor_kulesh.model.users.Admin;
 import by.yahor_kulesh.model.users.Client;
 import by.yahor_kulesh.model.users.User;
 import by.yahor_kulesh.utils.ObjectArray;
-import by.yahor_kulesh.utils.ObjectSetAsMap;
+import by.yahor_kulesh.utils.ObjectSetAsArray;
 import by.yahor_kulesh.validators.InputValidator;
 
 import java.math.BigDecimal;
@@ -60,7 +60,7 @@ public class TicketService extends Data{
         u2.setId(client.getId());
         System.out.println("\n\n\nu2 user is equal to client: " + u2.equals(client));
 
-        ObjectSetAsMap userRepo = new ObjectSetAsMap();
+        ObjectSetAsArray userRepo = new ObjectSetAsArray();
         System.out.println("Result of inputting client value:" + userRepo.add(client));
         System.out.println("Result of input similar as client value:" + userRepo.add(u2));
         System.out.println("User repo contains u2 or client:" + userRepo.contains(u2));

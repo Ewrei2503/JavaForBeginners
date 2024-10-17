@@ -1,10 +1,8 @@
 package by.yahor_kulesh.utils;
 
 
-public class ObjectArray {
-    private Object[] objects;
+public class ObjectArray extends ObjectCollection{
 
-    private int firstEmptyElement = 0;
 
     public ObjectArray() {
         objects = new Object[10];
@@ -16,24 +14,10 @@ public class ObjectArray {
             objects[firstEmptyElement] = object;
             firstEmptyElement++;
         } else {
-            objects = addAndResize(object);
+            objects = addAndResize(object, objects.length>>1);
         }
     }
 
-    private Object[] addAndResize(Object object){
-        Object[] resizedArray = new Object[objects.length + (objects.length>>1)];
-        fillResizedArray(resizedArray, object);
-        return resizedArray;
-    }
-
-    private void fillResizedArray(Object[] resizedArray,Object object) {
-        int x=0;
-        while(x<firstEmptyElement){
-            resizedArray[x] = objects[x];
-            x++;
-        }
-        resizedArray[x] = object;
-    }
 
     public Object getByIndex(int index) {
         if(index < 0 || index >= firstEmptyElement) {
@@ -52,9 +36,5 @@ public class ObjectArray {
             }
             firstEmptyElement--;
         }
-    }
-
-    public int size() {
-        return firstEmptyElement;
     }
 }
