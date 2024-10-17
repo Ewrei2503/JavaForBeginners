@@ -15,7 +15,19 @@ public class Client extends User {
     }
 
     @Override
-    public void print() {
-	    System.out.println("ID: " + this.getId() + "\nRole: " + this.printRole() + "\nTickets: " +  tickets.size() + "\n\n");
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(!(o instanceof Client client)) return false;
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + this.getId() + "\nRole: " + this.printRole() + "\nTickets: " +  tickets.size() + "\n\n";
     }
 }

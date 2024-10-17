@@ -14,7 +14,17 @@ public class Admin extends User {
     }
 
     @Override
-    public void print() {
-	    System.out.println("ID: " + this.getId() + "\nRole: " + this.printRole() + "\n\n\n");
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public String toString() {
+        return "ID: " + this.getId() + "\nRole: " + this.printRole() + "\n\n\n";
     }
 }
