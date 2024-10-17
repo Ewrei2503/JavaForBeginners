@@ -4,6 +4,8 @@ import java.util.function.Consumer;
 
 public class ObjectSetAsArray extends ObjectCollection {
 
+    private static final double MAX_CAPACITY_PERCENTAGE = 0.75;
+
     public ObjectSetAsArray() {
        objects = new Object[16];
     }
@@ -12,7 +14,8 @@ public class ObjectSetAsArray extends ObjectCollection {
         if(contains(o)) {
             return false;
         } else {
-            if(firstEmptyElement >= objects.length*0.75) {
+
+            if(firstEmptyElement >= objects.length * MAX_CAPACITY_PERCENTAGE) {
                 objects = addAndResize(o, objects.length);
                 firstEmptyElement++;
             }else {
