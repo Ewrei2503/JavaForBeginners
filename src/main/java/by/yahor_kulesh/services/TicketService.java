@@ -1,7 +1,6 @@
 package by.yahor_kulesh.services;
 
 import by.yahor_kulesh.model.Data;
-import by.yahor_kulesh.model.Printable;
 import by.yahor_kulesh.model.tickets.BusTicket;
 import by.yahor_kulesh.model.tickets.ConcertTicket;
 import by.yahor_kulesh.model.tickets.Sector;
@@ -9,8 +8,8 @@ import by.yahor_kulesh.model.tickets.Ticket;
 import by.yahor_kulesh.model.users.Admin;
 import by.yahor_kulesh.model.users.Client;
 import by.yahor_kulesh.model.users.User;
-import by.yahor_kulesh.repositories.TicketRepo;
-import by.yahor_kulesh.repositories.UserRepo;
+import by.yahor_kulesh.utils.ObjectArray;
+import by.yahor_kulesh.utils.ObjectSetAsMap;
 import by.yahor_kulesh.validators.InputValidator;
 
 import java.math.BigDecimal;
@@ -61,20 +60,20 @@ public class TicketService extends Data{
         u2.setId(client.getId());
         System.out.println("\n\n\nu2 user is equal to client: " + u2.equals(client));
 
-        UserRepo userRepo = new UserRepo();
+        ObjectSetAsMap userRepo = new ObjectSetAsMap();
         System.out.println("Result of inputting client value:" + userRepo.add(client));
         System.out.println("Result of input similar as client value:" + userRepo.add(u2));
         System.out.println("User repo contains u2 or client:" + userRepo.contains(u2));
         System.out.println("Result of input other value:" + userRepo.add(new Admin()) + "\n\n\n");
         System.out.println("----------------------------------");
-        userRepo.iterate(Printable::print);
+        userRepo.iterate(System.out::println);
         System.out.println("User repo value was removed: " + !userRepo.remove(u2));
         System.out.println("----------------------------------");
-        userRepo.iterate(Printable::print);
+        userRepo.iterate(System.out::println);
     }
 
     private static void testTicketRepo() {
-        TicketRepo ticketRepo = new TicketRepo();
+        ObjectArray ticketRepo = new ObjectArray();
         for(int i = 0;i<13;i++){
             ticketRepo.add(new Ticket());
         }
