@@ -21,11 +21,11 @@ public class TicketService extends Data{
         Client client = testUser(concert);
 
         try{
-            testTicketRepo();
+            testObjectArray();
         }catch(IndexOutOfBoundsException e){
             System.err.println(e.getMessage());
         }
-        testUserRepo(client);
+        testObjectSet(client);
     }
 
     private static ConcertTicket testTicket() {
@@ -55,7 +55,7 @@ public class TicketService extends Data{
         return client;
     }
 
-    private static void testUserRepo(Client client) {
+    private static void testObjectSet(Client client) {
         User u2 = new Client();
         u2.setId(client.getId());
         System.out.println("\n\n\nu2 user is equal to client: " + u2.equals(client));
@@ -72,7 +72,7 @@ public class TicketService extends Data{
         userRepo.iterate(System.out::println);
     }
 
-    private static void testTicketRepo() {
+    private static void testObjectArray() {
         ObjectArray ticketRepo = new ObjectArray();
         for(int i = 0;i<13;i++){
             ticketRepo.add(new Ticket());
