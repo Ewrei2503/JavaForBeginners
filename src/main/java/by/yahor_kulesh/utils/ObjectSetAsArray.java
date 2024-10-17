@@ -40,17 +40,17 @@ public class ObjectSetAsArray extends ObjectCollection {
             if(objects[i].equals(o)) {
                 if(firstEmptyElement-1==i) {
                     objects[i] = null;
-                }
-                while(i<objects.length-2){
-                    if(objects[i] == null) break;
-                    objects[i] = objects[i+1];
-                    i++;
+                } else {
+                    while(i < firstEmptyElement) {
+                        objects[i] = objects[i + 1];
+                        i++;
+                    }
                 }
                 firstEmptyElement--;
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     public void iterate(Consumer<? super Object> action){
