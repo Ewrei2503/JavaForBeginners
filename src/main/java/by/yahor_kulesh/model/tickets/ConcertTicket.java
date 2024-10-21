@@ -113,7 +113,7 @@ public class ConcertTicket extends Ticket {
                 ";\nDate of event: " + (this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
                 ";\nPromo ticket: " + this.isPromo() +
                 ";\nSector: " + this.getSector() +
-                ";\nWas bought: " + (this.getTicketCreationTime() == null? null: this.getTicketCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
+                ";\nWas bought: " + (this.getCreationTime() == null? null: this.getCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
                 ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
                 "$.\n\n\n");
     }

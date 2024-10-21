@@ -1,10 +1,18 @@
 package by.yahor_kulesh.model;
 
 import java.util.Objects;
+import java.util.Objects;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 public abstract class Data implements Printable{
+    private final ZonedDateTime creationTime = ZonedDateTime.now();
+
     private UUID id = UUID.randomUUID();
+
+    public ZonedDateTime getCreationTime() {
+        return creationTime;
+    }
 
     public UUID getId(){
         return id;

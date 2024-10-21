@@ -11,7 +11,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Ticket extends Data {
-    private final ZonedDateTime ticketCreationTime = ZonedDateTime.now();
     private final BigDecimal price;
 
     private ZonedDateTime date;
@@ -52,9 +51,6 @@ public class Ticket extends Data {
         return date;
     }
 
-    public ZonedDateTime getTicketCreationTime() {
-        return ticketCreationTime;
-    }
 
     public BigDecimal getPrice() {
         return price;
@@ -73,13 +69,13 @@ public class Ticket extends Data {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.getId(), ticketCreationTime, price, date);
+        return Objects.hash(super.getId(), super.getCreationTime(), price, date);
     }
 
     @Override
     public String toString() {
         return "Ticket{" +
-                "ticketCreationTime=" + ticketCreationTime +
+                "ticketCreationTime=" + super.getCreationTime() +
                 ", date=" + date +
                 ", price=" + price +
                 "} " + super.toString();
@@ -92,7 +88,7 @@ public class Ticket extends Data {
     public void print() {
 	    System.out.println("Ticket Info:\n" +
                 "ID: " + this.getId() +
-                ";\nWas bought: " + (this.getTicketCreationTime() == null? null: this.getTicketCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
+                ";\nWas bought: " + (this.getCreationTime() == null? null: this.getCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
                 ";\nDate of event: " + (this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
 
                 ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
