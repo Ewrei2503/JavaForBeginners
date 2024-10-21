@@ -7,6 +7,7 @@ target/
 .idea/
 .mvn/wrapper/
 .eclipse/
+.mvn
 
 ### Eclipse ###
 .apt_generated

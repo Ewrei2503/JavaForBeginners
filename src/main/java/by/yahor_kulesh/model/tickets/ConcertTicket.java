@@ -1,7 +1,5 @@
 package by.yahor_kulesh.model.tickets;
 
-import by.yahor_kulesh.model.Printable;
-
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.UUID;
