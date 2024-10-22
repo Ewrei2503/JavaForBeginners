@@ -30,4 +30,12 @@ public abstract class User extends Data{
     public boolean equals(Object obj) {
         return super.equals(obj);
     }
+
+    public Client toClient(){
+        return (Client) this;
+    }
+
+    public Admin toAdmin(){
+        return (Admin) this;
+    }
 }
