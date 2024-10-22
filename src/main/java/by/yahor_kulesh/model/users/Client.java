@@ -35,6 +35,6 @@ public class Client extends User {
 
     @Override
     public String toString() {
-        return "ID: " + this.getId() + "\nRole: " + this.printRole() + "\nTickets: " +  tickets.size() + "\n\n";
+        return "ID: " + this.getId() + "\nRole: " + this.getRole() + "\nTickets: " +  tickets.size() + "\n\n";
     }
 }

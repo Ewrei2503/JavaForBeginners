@@ -32,6 +32,6 @@ public class Admin extends User {
 
     @Override
     public String toString() {
-        return "ID: " + this.getId() + "\nRole: " + this.printRole() + "\n\n\n";
+        return "ID: " + this.getId() + "\nRole: " + this.getRole() + "\n\n\n";
     }
 }
