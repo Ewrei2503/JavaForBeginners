@@ -17,7 +17,6 @@ public class UserDAO{
                 Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/my_ticket_service_db","postgres","postgres");
                 PreparedStatement stat = con.prepareStatement("INSERT INTO usr(id,name,creation_date,role) VALUES (?,?,?,CAST(? AS role_type))")
         ){
-            if(user==null) throw new SQLException("Cannot insert: User is null");
             prepareUserForStatement(user, stat);
             stat.execute();
         }catch(SQLException e){
@@ -34,13 +33,13 @@ public class UserDAO{
                 stat.setObject(1, id);
                 rs = stat.executeQuery();
                 User user;
-                if(rs.next()== rs.wasNull()){
-                    throw new SQLException("User not found");
-                } else if(rs.getString(4).equals("Client")){
-                    user = new Client();
-                } else{
-                    user = new Admin();
-                }
+                if(rs.next()){
+                    if(rs.getString(4).equals("Client")){
+                        user = new Client();
+                    } else{
+                        user = new Admin();
+                    }
+                } else return null;
                 user.setId((UUID) rs.getObject(1));
                 user.setName(rs.getString(2));
                 user.setCreationTime(rs.getTimestamp(3).toLocalDateTime().atZone(ZoneId.systemDefault()));
@@ -56,13 +55,11 @@ public class UserDAO{
         }
     }
 
-    public void update(User user, UUID id){
+    public void update(User user){
         try(
                 Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/my_ticket_service_db","postgres","postgres");
                 PreparedStatement stat = con.prepareStatement("UPDATE usr SET id=?,name=?,creation_date=?,role=CAST(? AS role_type) WHERE id=?")
         ){
-            if(user==null) throw new SQLException("Cannot update: User is null");
-            if(id==null) throw new SQLException("Cannot update: id is null");
             prepareUserForStatement(user, stat);
             stat.setObject(5,user.getId());
             stat.executeUpdate();
