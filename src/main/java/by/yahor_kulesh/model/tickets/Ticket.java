@@ -86,27 +86,15 @@ public class Ticket extends Data {
 
     @Override
     public String toString() {
-        return "Ticket{" +
-                "ticketCreationTime=" + super.getCreationTime() +
-                ", date=" + date +
-                ", price=" + price +
-                "} " + super.toString();
+        return "Ticket Info:\n" +
+                       "ID: " + this.getId() +
+                       ";\nUser's ID: " + this.getUserId() +
+                       ";\nWas bought: " + (this.getCreationTime() == null? null: this.getCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
+                       ";\nDate of event: " + (this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
+
+                       ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
+                       "$.\n\n\n";
     }
-
-
-
-
-    @Override
-    public void print() {
-	    System.out.println("Ticket Info:\n" +
-                "ID: " + this.getId() +
-                ";\nWas bought: " + (this.getCreationTime() == null? null: this.getCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
-                ";\nDate of event: " + (this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
-
-                ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
-                "$.\n\n\n");
-    }
-
 
 
 
