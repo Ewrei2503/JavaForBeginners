@@ -13,7 +13,11 @@ public abstract class User extends Data{
         this.name = name;
     }
 
-    public String printRole(){
+    public void printRole(){
+        System.out.println(getRole());
+    }
+
+    public String getRole(){
         return this.getClass().getSimpleName();
     }
 
