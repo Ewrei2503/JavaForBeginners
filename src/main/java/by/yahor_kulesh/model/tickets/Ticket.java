@@ -15,6 +15,8 @@ public class Ticket extends Data {
 
     private ZonedDateTime date;
 
+    private UUID userId;
+
 
 
 
@@ -38,10 +40,17 @@ public class Ticket extends Data {
         super.setId(ticket.getId());
         this.date = ticket.date;
         this.price = ticket.price;
+        this.userId = ticket.userId;
     }
 
 
+    public UUID getUserId() {
+        return userId;
+    }
 
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
 
     public void setDate(ZonedDateTime date) {
         this.date = date;
@@ -57,14 +66,17 @@ public class Ticket extends Data {
     }
 
 
+
+
     /**I've deleted from here ticket creation time,
      * because it will be always false
      * */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Ticket ticket)) return false;
-        return Objects.equals(this.getId(), ticket.getId()) && Objects.equals(price, ticket.price) && Objects.equals(date, ticket.date);
+        if(this == o) return true;
+        if(!(o instanceof Ticket ticket)) return false;
+        if(!super.equals(o)) return false;
+        return Objects.equals(this.getId(), ticket.getId()) && Objects.equals(price, ticket.price) && Objects.equals(date, ticket.date) && Objects.equals(userId, ticket.userId);
     }
 
     @Override
