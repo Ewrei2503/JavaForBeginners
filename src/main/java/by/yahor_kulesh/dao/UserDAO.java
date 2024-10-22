@@ -80,7 +80,7 @@ public class UserDAO{
             stat.setObject(1, id);
             stat.execute();
         } catch(SQLException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         }
     }
 
