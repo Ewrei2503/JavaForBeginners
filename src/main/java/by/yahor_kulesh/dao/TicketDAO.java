@@ -17,7 +17,6 @@ public class TicketDAO{
                 Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/my_ticket_service_db","postgres","postgres");
                 PreparedStatement stat = con.prepareStatement("INSERT INTO ticket(id,user_id,ticket_type,creation_date) VALUES (?,?,CAST(? AS ticket_type),?)")
         ){
-            if(ticket==null) throw new SQLException("Ticket is null");
             prepareTicketForStatement(ticket, stat);
             stat.execute();
         }catch(SQLException e){
@@ -37,9 +36,7 @@ public class TicketDAO{
                     return getTicketFromDB();
                 }else return null;
             } finally {
-                if(rs != null) {
-                    rs.close();
-                }
+                closeResultSet();
             }
         } catch(SQLException e) {
             System.err.println(e.getMessage());
@@ -61,9 +58,7 @@ public class TicketDAO{
                 }
                 return tickets;
             } finally {
-                if(rs != null) {
-                    rs.close();
-                }
+                closeResultSet();
             }
         } catch(SQLException e) {
             System.err.println(e.getMessage());
@@ -71,36 +66,13 @@ public class TicketDAO{
         }
     }
 
-    public Ticket getByIdAndUserId(UUID id, UUID user_id) {
-        try{
-            try(
-                    Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/my_ticket_service_db", "postgres", "postgres");
-                    PreparedStatement stat = con.prepareStatement("SELECT * FROM ticket where id=? and user_id=?")
-            ) {
-                stat.setObject(1, id);
-                stat.setObject(2, user_id);
-                rs = stat.executeQuery();
-                if(rs.next()){
-                   return getTicketFromDB();
-                }else return null;
-            } finally {
-                if(rs != null) {
-                    rs.close();
-                }
-            }
-        } catch(SQLException e) {
-            System.err.println(e.getMessage());
-            return null;
-        }
-    }
-
-    public void update(Ticket ticket, UUID id){
+    public void update(Ticket ticket){
         try(
                 Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/my_ticket_service_db","postgres","postgres");
                 PreparedStatement stat = con.prepareStatement("UPDATE ticket SET id=?,user_id=?,ticket_type=CAST(? AS ticket_type),creation_date=? WHERE id=?")
         ){
             prepareTicketForStatement(ticket, stat);
-            stat.setObject(5,id);
+            stat.setObject(5,ticket.getId());
             stat.executeUpdate();
         } catch (SQLException e){
             System.err.println(e.getMessage());
@@ -137,5 +109,11 @@ public class TicketDAO{
         ticket.setUserId((UUID) rs.getObject(2));
         ticket.setCreationTime(rs.getTimestamp(4).toLocalDateTime().atZone(ZoneId.systemDefault()));
         return ticket;
+    }
+
+    private void closeResultSet() throws SQLException {
+        if(rs != null) {
+            rs.close();
+        }
     }
 }
