@@ -1,11 +1,12 @@
 package by.yahor_kulesh.services;
 
 import by.yahor_kulesh.dao.UserDAO;
+import by.yahor_kulesh.model.Data;
 import by.yahor_kulesh.model.users.User;
 
 import java.util.UUID;
 
-public class UserService {
+public class UserService extends Data {
     private static final UserDAO userDAO = new UserDAO();
 
 
