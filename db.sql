@@ -1,13 +1,15 @@
 CREATE DATABASE my_ticket_service_db;
 
+CREATE TYPE role_type as enum('Client','Admin');
+CREATE TYPE ticket_type as enum('bus','concert');
+
 CREATE TABLE usr(
                     id uuid NOT NULL UNIQUE,
                     name varchar(40),
                     creation_date timestamp,
+                    role role_type,
                     PRIMARY KEY(id)
 );
-
-CREATE TYPE ticket_type as enum('bus','concert');
 
 CREATE TABLE ticket(
                        id uuid NOT NULL UNIQUE,
