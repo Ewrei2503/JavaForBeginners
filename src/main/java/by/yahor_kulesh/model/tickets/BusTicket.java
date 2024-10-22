@@ -17,6 +17,11 @@ public class BusTicket extends Ticket{
         this.backpackWeight = 0;
     }
 
+    public BusTicket(Ticket ticket) {
+        super(ticket);
+        this.backpackWeight = 25;
+    }
+
     public BusTicket(double backpackWeight) {
         this.backpackWeight = backpackWeight;
     }

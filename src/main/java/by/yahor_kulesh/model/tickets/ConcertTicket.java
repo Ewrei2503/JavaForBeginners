@@ -31,6 +31,14 @@ public class ConcertTicket extends Ticket {
         this.sector = null;
     }
 
+    public ConcertTicket(Ticket ticket) {
+        super(ticket);
+        this.concertHall = "";
+        this.eventCode = "";
+        this.isPromo = false;
+        this.sector = null;
+    }
+
     public ConcertTicket(Ticket ticket, String concertHall, int eventCode, boolean isPromo, String sector) {
         super(ticket);
         this.concertHall = validateStringLimits(concertHall, "Concert Hall", new char[][]{{'A','Z'}, {'a','z'}});
