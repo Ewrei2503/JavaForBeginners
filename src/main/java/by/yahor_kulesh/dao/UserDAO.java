@@ -1,10 +1,16 @@
 package by.yahor_kulesh.dao;
 
+import by.yahor_kulesh.config.ConnectionConfig;
 import by.yahor_kulesh.model.users.Admin;
 import by.yahor_kulesh.model.users.Client;
 import by.yahor_kulesh.model.users.User;
 
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.util.UUID;
 
@@ -14,7 +20,7 @@ public class UserDAO{
 
     public void insert(User user){
         try(
-                Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/my_ticket_service_db","postgres","postgres");
+                Connection con = ConnectionConfig.getConnection();
                 PreparedStatement stat = con.prepareStatement("INSERT INTO usr(id,name,creation_date,role) VALUES (?,?,?,CAST(? AS role_type))")
         ){
             prepareUserForStatement(user, stat);
@@ -27,7 +33,7 @@ public class UserDAO{
     public User getById(UUID id){
         try{
             try(
-                    Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/my_ticket_service_db", "postgres", "postgres");
+                    Connection con = ConnectionConfig.getConnection();
                     PreparedStatement stat = con.prepareStatement("SELECT * FROM usr where id=?")
             ) {
                 stat.setObject(1, id);
@@ -40,7 +46,7 @@ public class UserDAO{
                         user = new Admin();
                     }
                 } else return null;
-                user.setId((UUID) rs.getObject(1));
+                user.setId(UUID.fromString(rs.getString(1)));
                 user.setName(rs.getString(2));
                 user.setCreationTime(rs.getTimestamp(3).toLocalDateTime().atZone(ZoneId.systemDefault()));
                 return user;
@@ -57,7 +63,7 @@ public class UserDAO{
 
     public void update(User user){
         try(
-                Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/my_ticket_service_db","postgres","postgres");
+                Connection con = ConnectionConfig.getConnection();
                 PreparedStatement stat = con.prepareStatement("UPDATE usr SET id=?,name=?,creation_date=?,role=CAST(? AS role_type) WHERE id=?")
         ){
             prepareUserForStatement(user, stat);
@@ -70,7 +76,7 @@ public class UserDAO{
 
     public void deleteById(UUID id){
         try(
-                Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/my_ticket_service_db","postgres","postgres");
+                Connection con = ConnectionConfig.getConnection();
                 PreparedStatement stat = con.prepareStatement("DELETE FROM usr WHERE id=?")
         ){
             if(id==null) throw new SQLException("Cannot delete: id is null");

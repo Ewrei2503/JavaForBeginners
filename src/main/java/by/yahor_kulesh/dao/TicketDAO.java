@@ -1,11 +1,16 @@
 package by.yahor_kulesh.dao;
 
+import by.yahor_kulesh.config.ConnectionConfig;
 import by.yahor_kulesh.model.tickets.BusTicket;
 import by.yahor_kulesh.model.tickets.ConcertTicket;
 import by.yahor_kulesh.model.tickets.Ticket;
 import by.yahor_kulesh.utils.ObjectArray;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.util.UUID;
 
@@ -14,7 +19,7 @@ public class TicketDAO{
 
     public void insert(Ticket ticket){
         try(
-                Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/my_ticket_service_db","postgres","postgres");
+                Connection con = ConnectionConfig.getConnection();
                 PreparedStatement stat = con.prepareStatement("INSERT INTO ticket(id,user_id,ticket_type,creation_date) VALUES (?,?,CAST(? AS ticket_type),?)")
         ){
             prepareTicketForStatement(ticket, stat);
@@ -27,7 +32,7 @@ public class TicketDAO{
     public Ticket getById(UUID id) {
         try{
             try(
-                    Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/my_ticket_service_db", "postgres", "postgres");
+                    Connection con = ConnectionConfig.getConnection();
                     PreparedStatement stat = con.prepareStatement("SELECT * FROM ticket where id=?")
             ) {
                 stat.setObject(1, id);
@@ -48,7 +53,7 @@ public class TicketDAO{
         ObjectArray tickets = new ObjectArray();
         try{
             try(
-                    Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/my_ticket_service_db", "postgres", "postgres");
+                    Connection con = ConnectionConfig.getConnection();
                     PreparedStatement stat = con.prepareStatement("SELECT * FROM ticket where user_id=?")
             ) {
                 stat.setObject(1, id);
@@ -68,7 +73,7 @@ public class TicketDAO{
 
     public void update(Ticket ticket){
         try(
-                Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/my_ticket_service_db","postgres","postgres");
+                Connection con = ConnectionConfig.getConnection();
                 PreparedStatement stat = con.prepareStatement("UPDATE ticket SET id=?,user_id=?,ticket_type=CAST(? AS ticket_type),creation_date=? WHERE id=?")
         ){
             prepareTicketForStatement(ticket, stat);
@@ -81,7 +86,7 @@ public class TicketDAO{
 
     public void deleteById(UUID id){
         try(
-                Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/my_ticket_service_db","postgres","postgres");
+                Connection con = ConnectionConfig.getConnection();
                 PreparedStatement stat = con.prepareStatement("DELETE FROM ticket WHERE id=?")
         ){
             stat.setObject(1, id);
@@ -105,8 +110,8 @@ public class TicketDAO{
         } else if(rs.getString(3).equals("bus")) {
             ticket = new BusTicket();
         } else ticket = new Ticket();
-        ticket.setId((UUID) rs.getObject(1));
-        ticket.setUserId((UUID) rs.getObject(2));
+        ticket.setId(UUID.fromString(rs.getString(1)));
+        ticket.setUserId(UUID.fromString(rs.getString(2)));
         ticket.setCreationTime(rs.getTimestamp(4).toLocalDateTime().atZone(ZoneId.systemDefault()));
         return ticket;
     }
