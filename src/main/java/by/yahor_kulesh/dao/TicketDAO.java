@@ -41,7 +41,9 @@ public class TicketDAO{
                     return getTicketFromDB();
                 }else return null;
             } finally {
-                closeResultSet();
+                if(rs != null) {
+                    rs.close();
+                }
             }
         } catch(SQLException e) {
             System.err.println(e.getMessage());
@@ -63,7 +65,9 @@ public class TicketDAO{
                 }
                 return tickets;
             } finally {
-                closeResultSet();
+                if(rs != null) {
+                    rs.close();
+                }
             }
         } catch(SQLException e) {
             System.err.println(e.getMessage());
@@ -114,11 +118,5 @@ public class TicketDAO{
         ticket.setUserId(UUID.fromString(rs.getString(2)));
         ticket.setCreationTime(rs.getTimestamp(4).toLocalDateTime().atZone(ZoneId.systemDefault()));
         return ticket;
-    }
-
-    private void closeResultSet() throws SQLException {
-        if(rs != null) {
-            rs.close();
-        }
     }
 }
