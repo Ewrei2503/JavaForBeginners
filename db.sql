@@ -1,7 +1,5 @@
-CREATE DATABASE my_ticket_service_db;
-
-CREATE TYPE role_type as enum('Client','Admin');
-CREATE TYPE ticket_type as enum('bus','concert','not defined');
+CREATE TYPE role_type as enum('CLIENT','ADMIN');
+CREATE TYPE ticket_type as enum('BUS','CONCERT','NOT_DEFINED');
 
 CREATE TABLE usr(
                     id uuid NOT NULL UNIQUE,
