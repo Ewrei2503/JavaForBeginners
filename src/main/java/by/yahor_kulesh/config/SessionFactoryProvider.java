@@ -1,4 +1,4 @@
-package by.yahor_kulesh.dao;
+package by.yahor_kulesh.config;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
