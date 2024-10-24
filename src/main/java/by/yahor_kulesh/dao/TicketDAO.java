@@ -30,21 +30,15 @@ public class TicketDAO{
     }
 
     public Ticket getById(UUID id) {
-        try{
-            try(
-                    Connection con = ConnectionConfig.getConnection();
-                    PreparedStatement stat = con.prepareStatement("SELECT * FROM ticket where id=?")
-            ) {
-                stat.setObject(1, id);
-                rs = stat.executeQuery();
-                if(rs.next()){
-                    return getTicketFromDB();
-                }else return null;
-            } finally {
-                if(rs != null) {
-                    rs.close();
-                }
-            }
+        try(
+                Connection con = ConnectionConfig.getConnection();
+                PreparedStatement stat = con.prepareStatement("SELECT * FROM ticket where id=?")
+        ) {
+            stat.setObject(1, id);
+            rs = stat.executeQuery();
+            if(rs.next()){
+                return getTicketFromDB();
+            }else return null;
         } catch(SQLException e) {
             System.err.println(e.getMessage());
             return null;
@@ -53,22 +47,16 @@ public class TicketDAO{
 
     public ObjectArray getByUserId(UUID id) {
         ObjectArray tickets = new ObjectArray();
-        try{
-            try(
-                    Connection con = ConnectionConfig.getConnection();
-                    PreparedStatement stat = con.prepareStatement("SELECT * FROM ticket where user_id=?")
-            ) {
-                stat.setObject(1, id);
-                rs = stat.executeQuery();
-                while(rs.next()) {
-                    tickets.add(getTicketFromDB());
-                }
-                return tickets;
-            } finally {
-                if(rs != null) {
-                    rs.close();
-                }
+        try(
+                Connection con = ConnectionConfig.getConnection();
+                PreparedStatement stat = con.prepareStatement("SELECT * FROM ticket where user_id=?")
+        ) {
+            stat.setObject(1, id);
+            rs = stat.executeQuery();
+            while(rs.next()) {
+                tickets.add(getTicketFromDB());
             }
+            return tickets;
         } catch(SQLException e) {
             System.err.println(e.getMessage());
             return null;
