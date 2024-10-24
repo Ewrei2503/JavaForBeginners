@@ -5,16 +5,17 @@ import by.yahor_kulesh.model.Data;
 import by.yahor_kulesh.validators.InputValidator;
 
 import java.math.BigDecimal;
-import java.time.*;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.UUID;
 
 public class Ticket extends Data {
-    private final ZonedDateTime ticketCreationTime = ZonedDateTime.now();
     private final BigDecimal price;
 
     private ZonedDateTime date;
+
+    private UUID userId;
 
 
 
@@ -39,10 +40,17 @@ public class Ticket extends Data {
         super.setId(ticket.getId());
         this.date = ticket.date;
         this.price = ticket.price;
+        this.userId = ticket.userId;
     }
 
 
+    public UUID getUserId() {
+        return userId;
+    }
 
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
 
     public void setDate(ZonedDateTime date) {
         this.date = date;
@@ -52,13 +60,12 @@ public class Ticket extends Data {
         return date;
     }
 
-    public ZonedDateTime getTicketCreationTime() {
-        return ticketCreationTime;
-    }
 
     public BigDecimal getPrice() {
         return price;
     }
+
+
 
 
     /**I've deleted from here ticket creation time,
@@ -66,39 +73,28 @@ public class Ticket extends Data {
      * */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Ticket ticket)) return false;
-        return Objects.equals(this.getId(), ticket.getId()) && Objects.equals(price, ticket.price) && Objects.equals(date, ticket.date);
+        if(this == o) return true;
+        if(!(o instanceof Ticket ticket)) return false;
+        if(!super.equals(o)) return false;
+        return Objects.equals(this.getId(), ticket.getId()) && Objects.equals(price, ticket.price) && Objects.equals(date, ticket.date) && Objects.equals(userId, ticket.userId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.getId(), ticketCreationTime, price, date);
+        return Objects.hash(super.getId(), super.getCreationTime(), price, date);
     }
 
     @Override
     public String toString() {
-        return "Ticket{" +
-                "ticketCreationTime=" + ticketCreationTime +
-                ", date=" + date +
-                ", price=" + price +
-                "} " + super.toString();
+        return "Ticket Info:\n" +
+                       "ID: " + this.getId() +
+                       ";\nUser's ID: " + this.getUserId() +
+                       ";\nWas bought: " + (this.getCreationTime() == null? null: this.getCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
+                       ";\nDate of event: " + (this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
+
+                       ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
+                       "$.\n\n\n";
     }
-
-
-
-
-    @Override
-    public void print() {
-	    System.out.println("Ticket Info:\n" +
-                "ID: " + this.getId() +
-                ";\nWas bought: " + (this.getTicketCreationTime() == null? null: this.getTicketCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
-                ";\nDate of event: " + (this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
-
-                ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
-                "$.\n\n\n");
-    }
-
 
 
 
