@@ -10,8 +10,14 @@
   <name>JavaForBeginners</name>
 
   <properties>
+    <java.version>17</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.release>17</maven.compiler.release>
+    <maven.compiler.release>${java.version}</maven.compiler.release>
+
+    <!-- Hibernate -->
+    <hibrenate-core.version>6.5.2.Final</hibrenate-core.version>
+    <hibrenate-hikaricp.version>6.5.2.Final</hibrenate-hikaricp.version>
+
   </properties>
 
   <dependencyManagement>
@@ -33,6 +39,18 @@
       <artifactId>junit-jupiter-params</artifactId>
       <scope>test</scope>
     </dependency>
+
+	  <!-- Hibernate -->
+	  <dependency>
+		  <groupId>org.hibernate</groupId>
+		  <artifactId>hibernate-core</artifactId>
+		  <version>${hibrenate-core.version}</version>
+	  </dependency>
+	  <dependency>
+		  <groupId>org.hibernate</groupId>
+		  <artifactId>hibernate-hikaricp</artifactId>
+		  <version>${hibrenate-hikaricp.version}</version>
+	  </dependency>
 
     <!--PostgreSQL-->
       <dependency>
