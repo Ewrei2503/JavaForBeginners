@@ -31,30 +31,24 @@ public class UserDAO{
     }
 
     public User getById(UUID id){
-        try{
-            try(
-                    Connection con = ConnectionConfig.getConnection();
-                    PreparedStatement stat = con.prepareStatement("SELECT * FROM usr where id=?")
-            ) {
-                stat.setObject(1, id);
-                rs = stat.executeQuery();
-                User user;
-                if(rs.next()){
-                    if(rs.getString(4).equals("Client")){
-                        user = new Client();
-                    } else{
-                        user = new Admin();
-                    }
-                } else return null;
-                user.setId(UUID.fromString(rs.getString(1)));
-                user.setName(rs.getString(2));
-                user.setCreationTime(rs.getTimestamp(3).toLocalDateTime().atZone(ZoneId.systemDefault()));
-                return user;
-            } finally {
-                if(rs != null) {
-                    rs.close();
+        try(
+                Connection con = ConnectionConfig.getConnection();
+                PreparedStatement stat = con.prepareStatement("SELECT * FROM usr where id=?")
+        ) {
+            stat.setObject(1, id);
+            rs = stat.executeQuery();
+            User user;
+            if(rs.next()){
+                if(rs.getString(4).equals("Client")){
+                    user = new Client();
+                } else{
+                    user = new Admin();
                 }
-            }
+            } else return null;
+            user.setId(UUID.fromString(rs.getString(1)));
+            user.setName(rs.getString(2));
+            user.setCreationTime(rs.getTimestamp(3).toLocalDateTime().atZone(ZoneId.systemDefault()));
+            return user;
         } catch(SQLException e) {
             System.err.println(e.getMessage());
             return null;
