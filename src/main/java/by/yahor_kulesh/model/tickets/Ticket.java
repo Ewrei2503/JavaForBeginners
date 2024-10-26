@@ -3,6 +3,8 @@ package by.yahor_kulesh.model.tickets;
 import by.yahor_kulesh.exceptions.OutOfLimitsException;
 import by.yahor_kulesh.model.Data;
 import by.yahor_kulesh.validators.InputValidator;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -10,11 +12,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.UUID;
 
+@Getter
 public class Ticket extends Data {
     private final BigDecimal price;
 
+    @Setter
     private ZonedDateTime date;
 
+    @Setter
     private UUID userId;
 
 
@@ -23,17 +28,20 @@ public class Ticket extends Data {
     public Ticket() {
         this.date = null;
         this.price = null;
+        this.userId = null;
     }
 
     public Ticket(UUID id) {
         super.setId(id);
         this.date = null;
         this.price = null;
+        this.userId = null;
     }
 
     public Ticket(ZonedDateTime date, BigDecimal price) {
         this.date = date;
         this.price = price;
+        this.userId = null;
     }
 
     public Ticket(Ticket ticket) {
@@ -42,30 +50,6 @@ public class Ticket extends Data {
         this.price = ticket.price;
         this.userId = ticket.userId;
     }
-
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
-
-    public void setDate(ZonedDateTime date) {
-        this.date = date;
-    }
-
-    public ZonedDateTime getDate() {
-        return date;
-    }
-
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-
 
 
     /**I've deleted from here ticket creation time,
