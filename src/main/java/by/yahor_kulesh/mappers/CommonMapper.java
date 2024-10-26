@@ -6,14 +6,14 @@ import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-public abstract class CommonMapper {
+public interface CommonMapper {
     @Named(value = "zonedDateTimeToTimestamp")
-    protected Timestamp zonedDateTimeToTimestamp(ZonedDateTime zdt) {
+    default Timestamp zonedDateTimeToTimestamp(ZonedDateTime zdt) {
         return Timestamp.valueOf(zdt.toLocalDateTime());
     }
 
     @Named(value = "timestampToZonedDateTime")
-    protected  ZonedDateTime timestampToZonedDateTime(Timestamp ts) {
+    default   ZonedDateTime timestampToZonedDateTime(Timestamp ts) {
         return ts.toLocalDateTime().atZone(ZoneId.systemDefault());
     }
 }

@@ -17,9 +17,9 @@ import java.util.Set;
 
 
 @Mapper
-public abstract class UserMapper extends CommonMapper{
+public interface UserMapper extends CommonMapper{
 
-    public static UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
 
 
@@ -29,43 +29,43 @@ public abstract class UserMapper extends CommonMapper{
         @Mapping(target = "creationTime", source="creationTime", qualifiedByName = "zonedDateTimeToTimestamp"),
         @Mapping(target="tickets", expression = "java(mapTickets(user))")
     })
-    public abstract UserEntity toEntity(User user);
+    UserEntity toEntity(User user);
 
 
 
 
     @ObjectFactory
-    public User toModel(UserEntity userEntity){
+    default User toModel(UserEntity userEntity){
         if(userEntity.getRole().equals(Role.CLIENT)) {
             return toClient(userEntity);
         } else return toAdmin(userEntity);
     }
 
     @Mapping(target = "creationTime", source = "creationTime", qualifiedByName = "timestampToZonedDateTime")
-    protected abstract Admin toAdmin(UserEntity userEntity);
+   Admin toAdmin(UserEntity userEntity);
 
     @Mappings({
           @Mapping(target = "creationTime", source = "creationTime", qualifiedByName = "timestampToZonedDateTime"),
           @Mapping(target = "tickets", expression = "java(mapTickets(userEntity))")
     })
-    protected abstract Client toClient(UserEntity userEntity);
+    Client toClient(UserEntity userEntity);
 
 
 
 
-    protected Role mapRole(User user) {
+    default Role mapRole(User user) {
         if(user instanceof Client) {
             return Role.CLIENT;
         } else return Role.ADMIN;
     }
 
-    protected Set<TicketEntity> mapTickets(User user) {
+    default Set<TicketEntity> mapTickets(User user) {
         if(user instanceof Client cl) {
             return TicketMapper.INSTANCE.toEntitySet(cl.getTickets());
         } else return null;
     }
 
-    protected Set<Ticket> mapTickets(UserEntity user) {
+    default Set<Ticket> mapTickets(UserEntity user) {
         if(user.getRole().equals(Role.CLIENT)) {
             return TicketMapper.INSTANCE.toModelSet(user.getTickets());
         } else return null;

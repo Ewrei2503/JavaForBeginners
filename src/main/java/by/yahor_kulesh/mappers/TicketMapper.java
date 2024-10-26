@@ -18,18 +18,17 @@ import java.util.UUID;
 
 
 @Mapper
-public abstract class TicketMapper extends CommonMapper{
+public interface TicketMapper extends CommonMapper{
 
-    public static TicketMapper INSTANCE = Mappers.getMapper(TicketMapper.class);
-
-
+    TicketMapper INSTANCE = Mappers.getMapper(TicketMapper.class);
 
 
     @ObjectFactory
-    public Ticket toModel(TicketEntity ticketEntity){
-        if(ticketEntity.getType().equals(TicketType.BUS)) {
+    default Ticket toModel(TicketEntity ticketEntity){
+        if(ticketEntity == null) return null;
+        if(TicketType.BUS == ticketEntity.getType()) {
             return toBus(ticketEntity);
-        } else if(ticketEntity.getType().equals(TicketType.CONCERT)){
+        } else if(ticketEntity.getType()==TicketType.CONCERT) {
             return toConcert(ticketEntity);
         } else return toTicket(ticketEntity);
     }
@@ -38,19 +37,24 @@ public abstract class TicketMapper extends CommonMapper{
             @Mapping(target = "creationTime", source = "creationTime", qualifiedByName = "timestampToZonedDateTime"),
             @Mapping(target = "userId", source="user", qualifiedByName = "userEntityToUUID")
     })
-    protected abstract ConcertTicket toConcert(TicketEntity ticketEntity);
+    ConcertTicket toConcert(TicketEntity ticketEntity);
 
     @Mappings({
             @Mapping(target = "creationTime", source = "creationTime", qualifiedByName = "timestampToZonedDateTime"),
             @Mapping(target = "userId", source="user", qualifiedByName = "userEntityToUUID")
     })
-    protected abstract BusTicket toBus(TicketEntity ticketEntity);
+    BusTicket toBus(TicketEntity ticketEntity);
 
-    @Mappings({
-            @Mapping(target = "creationTime", source = "creationTime", qualifiedByName = "timestampToZonedDateTime"),
-            @Mapping(target = "userId", source="user", qualifiedByName = "userEntityToUUID")
-    })
-    public abstract Ticket toTicket(TicketEntity ticketEntity);
+    default Ticket toTicket(TicketEntity ticketEntity){
+        if(ticketEntity == null) return null;
+        Ticket ticket = new Ticket();
+
+        ticket.setCreationTime( timestampToZonedDateTime( ticketEntity.getCreationTime() ) );
+        ticket.setUserId( userEntityToUUID( ticketEntity.getUser() ) );
+        ticket.setId( ticketEntity.getId() );
+
+        return ticket;
+    }
 
 
 
@@ -60,12 +64,12 @@ public abstract class TicketMapper extends CommonMapper{
             @Mapping(target = "creationTime", source = "creationTime", qualifiedByName = "zonedDateTimeToTimestamp"),
             @Mapping(target = "user", source="userId", qualifiedByName = "UUIDToUserEntity")
     })
-    public abstract TicketEntity toEntity(Ticket ticket);
+    TicketEntity toEntity(Ticket ticket);
 
 
 
 
-    protected TicketType mapTicketType(Ticket ticket) {
+    default TicketType mapTicketType(Ticket ticket) {
         if(ticket instanceof BusTicket) {
             return TicketType.BUS;
         } else if(ticket instanceof ConcertTicket) {
@@ -74,7 +78,7 @@ public abstract class TicketMapper extends CommonMapper{
     }
 
     @Named(value = "UUIDToUserEntity")
-    protected UserEntity UUIDToUserEntity(UUID uuid) {
+    default UserEntity UUIDToUserEntity(UUID uuid) {
         if(uuid == null) {
             return null;
         } else {
@@ -85,7 +89,7 @@ public abstract class TicketMapper extends CommonMapper{
     }
 
     @Named(value = "userEntityToUUID")
-    protected UUID userEntityToUUID(UserEntity userEntity) {
+    default UUID userEntityToUUID(UserEntity userEntity) {
         if(userEntity == null) {
             return null;
         } else {
@@ -96,6 +100,6 @@ public abstract class TicketMapper extends CommonMapper{
 
 
 
-    abstract Set<Ticket> toModelSet(Set<TicketEntity> ticketEntitySet);
-    abstract Set<TicketEntity> toEntitySet(Set<Ticket> ticketSet);
+    Set<Ticket> toModelSet(Set<TicketEntity> ticketEntitySet);
+    Set<TicketEntity> toEntitySet(Set<Ticket> ticketSet);
 }
