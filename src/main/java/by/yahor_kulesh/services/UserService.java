@@ -1,6 +1,7 @@
 package by.yahor_kulesh.services;
 
 import by.yahor_kulesh.dao.UserDAO;
+import by.yahor_kulesh.mappers.UserMapper;
 import by.yahor_kulesh.model.Data;
 import by.yahor_kulesh.model.users.User;
 
@@ -14,18 +15,18 @@ public class UserService extends Data {
         if(user==null || user.getId()==null) {
             System.err.println("User or user's ID cannot be null");
             return;
-        }if(userDAO.getById(user.getId())==null) {
-            userDAO.insert(user);
-        }else userDAO.update(user);
+        }if(userDAO.getUserById(user.getId())==null) {
+            userDAO.saveUser(UserMapper.INSTANCE.toEntity(user));
+        }else userDAO.updateUser(UserMapper.INSTANCE.toEntity(user));
     }
 
-    public static void deleteUserById(UUID id) {
-        if(id==null) {
+    public static void deleteUserById(User user) {
+        if(user.getId()==null) {
             System.err.println("User's ID cannot be null");
-        }else if(userDAO.getById(id)==null) {
+        }else if(userDAO.getUserById(user.getId())==null) {
             System.err.println("User not found");
         } else {
-            userDAO.deleteById(id);
+            userDAO.deleteUser(UserMapper.INSTANCE.toEntity(user));
         }
     }
 
@@ -33,6 +34,6 @@ public class UserService extends Data {
         if(id==null) {
             System.err.println("User's ID cannot be null");
             return null;
-        } else return userDAO.getById(id);
+        } else return UserMapper.INSTANCE.toModel(userDAO.getUserById(id));
     }
 }

@@ -1,10 +1,13 @@
 package by.yahor_kulesh.services;
 
 import by.yahor_kulesh.dao.TicketDAO;
+import by.yahor_kulesh.entity.TicketEntity;
+import by.yahor_kulesh.mappers.TicketMapper;
 import by.yahor_kulesh.model.Data;
 import by.yahor_kulesh.model.tickets.Ticket;
-import by.yahor_kulesh.utils.ObjectArray;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class TicketService extends Data{
@@ -16,15 +19,15 @@ public class TicketService extends Data{
             System.err.println("Ticket or ticket's ID cannot be null");
             return;
         }if(getTicketById(ticket.getId())==null) {
-            ticketDAO.insert(ticket);
-        } else ticketDAO.update(ticket);
+            ticketDAO.saveTicket(TicketMapper.INSTANCE.toEntity(ticket));
+        } else ticketDAO.updateTicket(TicketMapper.INSTANCE.toEntity(ticket));
     }
 
-    public static void deleteTicketById(UUID id) {
-        if(getTicketById(id)==null) {
-            System.err.println("Ticket not found");
+    public static void deleteTicketById(Ticket ticket) {
+        if(ticket==null || ticket.getId()==null) {
+            System.err.println("Ticket or ticket's ID is null");
         } else {
-            ticketDAO.deleteById(id);
+            ticketDAO.deleteTicketById(TicketMapper.INSTANCE.toEntity(ticket));
         }
     }
 
@@ -32,15 +35,22 @@ public class TicketService extends Data{
         if(id==null){
             System.err.println("Ticket's ID cannot be null");
             return null;
-        } else return ticketDAO.getById(id);
+        } else return TicketMapper.INSTANCE.toModel(ticketDAO.getTicketById(id));
     }
 
-    public static ObjectArray getTicketByUserId(UUID userId) {
+    public static List<Ticket> getTicketByUserId(UUID userId) {
         if(userId==null){
             System.err.println("User's ID cannot be null");
             return null;
-        }return ticketDAO.getByUserId(userId);
+        } else {
+            List<Ticket> list = new ArrayList<>();
+            List<TicketEntity> entities = ticketDAO.getTicketByUserId(userId);
+            if(entities!=null) {
+                for(TicketEntity ent: entities){
+                    list.add(TicketMapper.INSTANCE.toModel(ent));
+                }
+            } else return null;
+            return list;
+        }
     }
-
-
 }
