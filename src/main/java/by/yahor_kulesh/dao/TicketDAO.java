@@ -1,122 +1,63 @@
 package by.yahor_kulesh.dao;
 
-import by.yahor_kulesh.config.ConnectionConfig;
-import by.yahor_kulesh.model.tickets.BusTicket;
-import by.yahor_kulesh.model.tickets.ConcertTicket;
-import by.yahor_kulesh.model.tickets.Ticket;
-import by.yahor_kulesh.utils.ObjectArray;
+import by.yahor_kulesh.config.SessionFactoryProvider;
+import by.yahor_kulesh.entity.TicketEntity;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.SelectionQuery;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.ZoneId;
+import java.util.List;
 import java.util.UUID;
 
 public class TicketDAO{
-    private ResultSet rs = null;
 
-    public void insert(Ticket ticket){
-        try(
-                Connection con = ConnectionConfig.getConnection();
-                PreparedStatement stat = con.prepareStatement("INSERT INTO ticket(id,user_id,ticket_type,creation_date) VALUES (?,?,CAST(? AS ticket_type),?)")
-        ){
-            prepareTicketForStatement(ticket, stat);
-            stat.execute();
-        }catch(SQLException e){
-            System.err.println(e.getMessage());
+    public void saveTicket(TicketEntity ticket){
+        try(Session session = SessionFactoryProvider.getSessionFactory().openSession()){
+            Transaction tx = session.beginTransaction();
+            session.persist(ticket);
+            tx.commit();
+        } catch(Exception e) {
+            System.err.println("Error during saving ticket: " + e.getMessage());
         }
     }
 
-    public Ticket getById(UUID id) {
-        try{
-            try(
-                    Connection con = ConnectionConfig.getConnection();
-                    PreparedStatement stat = con.prepareStatement("SELECT * FROM ticket where id=?")
-            ) {
-                stat.setObject(1, id);
-                rs = stat.executeQuery();
-                if(rs.next()){
-                    return getTicketFromDB();
-                }else return null;
-            } finally {
-                if(rs != null) {
-                    rs.close();
-                }
-            }
-        } catch(SQLException e) {
-            System.err.println(e.getMessage());
+    public TicketEntity getTicketById(UUID id){
+        try(Session session = SessionFactoryProvider.getSessionFactory().openSession()){
+            return session.get(TicketEntity.class, id);
+        } catch(Exception e) {
+            System.err.println("Error during getting ticket: " + e.getMessage());
             return null;
         }
     }
 
-    public ObjectArray getByUserId(UUID id) {
-        ObjectArray tickets = new ObjectArray();
-        try{
-            try(
-                    Connection con = ConnectionConfig.getConnection();
-                    PreparedStatement stat = con.prepareStatement("SELECT * FROM ticket where user_id=?")
-            ) {
-                stat.setObject(1, id);
-                rs = stat.executeQuery();
-                while(rs.next()) {
-                    tickets.add(getTicketFromDB());
-                }
-                return tickets;
-            } finally {
-                if(rs != null) {
-                    rs.close();
-                }
-            }
-        } catch(SQLException e) {
-            System.err.println(e.getMessage());
+    public List<TicketEntity> getTicketByUserId(UUID id) {
+        try(Session session = SessionFactoryProvider.getSessionFactory().openSession()){
+            SelectionQuery<TicketEntity> q = session.createSelectionQuery("SELECT t FROM TicketEntity t WHERE t.user.id = :id", TicketEntity.class);
+            q.setParameter("id", id);
+            return q.getResultList();
+        } catch(Exception e) {
+            System.err.println("Error during getting ticket: " + e.getMessage());
             return null;
         }
     }
 
-    public void update(Ticket ticket){
-        try(
-                Connection con = ConnectionConfig.getConnection();
-                PreparedStatement stat = con.prepareStatement("UPDATE ticket SET id=?,user_id=?,ticket_type=CAST(? AS ticket_type),creation_date=? WHERE id=?")
-        ){
-            prepareTicketForStatement(ticket, stat);
-            stat.setObject(5,ticket.getId());
-            stat.executeUpdate();
-        } catch (SQLException e){
-            System.err.println(e.getMessage());
+    public void updateTicket(TicketEntity ticket){
+        try(Session session = SessionFactoryProvider.getSessionFactory().openSession()){
+            Transaction tx = session.beginTransaction();
+            session.merge(ticket);
+            tx.commit();
+        } catch(Exception e) {
+            System.err.println("Error during updating ticket: " + e.getMessage());
         }
     }
 
-    public void deleteById(UUID id){
-        try(
-                Connection con = ConnectionConfig.getConnection();
-                PreparedStatement stat = con.prepareStatement("DELETE FROM ticket WHERE id=?")
-        ){
-            stat.setObject(1, id);
-            stat.execute();
-        } catch(SQLException e) {
-            System.out.println(e.getMessage());
+    public void deleteTicketById(TicketEntity ticket){
+        try(Session session = SessionFactoryProvider.getSessionFactory().openSession()){
+            Transaction tx = session.beginTransaction();
+            session.remove(ticket);
+            tx.commit();
+        }catch(Exception e) {
+            System.err.println("Error during deleting ticket: " + e.getMessage());
         }
-    }
-
-    private void prepareTicketForStatement(Ticket ticket, PreparedStatement stat) throws SQLException {
-        stat.setObject(1,ticket.getId());
-        stat.setObject(2,ticket.getUserId());
-        stat.setObject(3,ticket instanceof ConcertTicket ? "concert": (ticket instanceof BusTicket ?"bus":"not defined"));
-        stat.setTimestamp(4, Timestamp.valueOf(ticket.getCreationTime().toLocalDateTime()));
-    }
-
-    private Ticket getTicketFromDB() throws SQLException {
-        Ticket ticket;
-        if(rs.getString(3).equals("concert")) {
-            ticket = new ConcertTicket();
-        } else if(rs.getString(3).equals("bus")) {
-            ticket = new BusTicket();
-        } else ticket = new Ticket();
-        ticket.setId(UUID.fromString(rs.getString(1)));
-        ticket.setUserId(UUID.fromString(rs.getString(2)));
-        ticket.setCreationTime(rs.getTimestamp(4).toLocalDateTime().atZone(ZoneId.systemDefault()));
-        return ticket;
     }
 }
