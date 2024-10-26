@@ -3,6 +3,8 @@ package by.yahor_kulesh.entity;
 import by.yahor_kulesh.entity.enums.TicketType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -27,6 +29,7 @@ public class TicketEntity {
     private UserEntity user;
 
     @Column(name = "ticket_type")
+    @Enumerated(EnumType.STRING)
     private TicketType type;
 
     @Column(name= "creation_date")
