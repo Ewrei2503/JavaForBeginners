@@ -1,6 +1,8 @@
 package by.yahor_kulesh.utils;
 
 
+import java.util.Arrays;
+
 public class ObjectArray extends ObjectCollection{
 
 
@@ -8,6 +10,12 @@ public class ObjectArray extends ObjectCollection{
         objects = new Object[10];
     }
 
+    @Override
+    public String toString() {
+        return "ObjectArray{" +
+                       "objects=" + Arrays.toString(Arrays.copyOf(objects, firstEmptyElement)) +
+                       "} ";
+    }
 
     public void add(Object object) {
         if(firstEmptyElement < objects.length) {

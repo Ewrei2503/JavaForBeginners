@@ -31,6 +31,14 @@ public class ConcertTicket extends Ticket {
         this.sector = null;
     }
 
+    public ConcertTicket(Ticket ticket) {
+        super(ticket);
+        this.concertHall = "";
+        this.eventCode = "";
+        this.isPromo = false;
+        this.sector = null;
+    }
+
     public ConcertTicket(Ticket ticket, String concertHall, int eventCode, boolean isPromo, String sector) {
         super(ticket);
         this.concertHall = validateStringLimits(concertHall, "Concert Hall", new char[][]{{'A','Z'}, {'a','z'}});
@@ -86,12 +94,17 @@ public class ConcertTicket extends Ticket {
 
     @Override
     public String toString() {
-        return "ConcertTicket{" +
-                "concertHall='" + concertHall + '\'' +
-                ", eventCode='" + eventCode + '\'' +
-                ", isPromo=" + isPromo +
-                ", sector=" + sector +
-                "} " + super.toString();
+        return "Concert ticket Info:\n" +
+                       "ID: " + this.getId() +
+                       ";\nUser's ID: " + this.getUserId() +
+                       ";\nConcert Hall: " + this.getConcertHall() +
+                       ";\nEvent Code: " + this.getEventCode() +
+                       ";\nDate of event: " + (this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
+                       ";\nPromo ticket: " + this.isPromo() +
+                       ";\nSector: " + this.getSector() +
+                       ";\nWas bought: " + (this.getCreationTime() == null? null: this.getCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
+                       ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
+                       "$.\n\n\n";
     }
 
 
@@ -102,19 +115,5 @@ public class ConcertTicket extends Ticket {
 
     public void share(String email, String phoneNumber) {
         System.out.println("ConcertTicket was send to the next email - " + email + ", and phone - " + phoneNumber + "\n");
-    }
-
-    @Override
-    public void print() {
-	    System.out.println("Concert ticket Info:\n" +
-                "ID: " + this.getId() +
-                ";\nConcert Hall: " + this.getConcertHall() +
-                ";\nEvent Code: " + this.getEventCode() +
-                ";\nDate of event: " + (this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
-                ";\nPromo ticket: " + this.isPromo() +
-                ";\nSector: " + this.getSector() +
-                ";\nWas bought: " + (this.getTicketCreationTime() == null? null: this.getTicketCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
-                ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
-                "$.\n\n\n");
     }
 }
