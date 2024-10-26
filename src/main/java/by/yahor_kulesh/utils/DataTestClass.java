@@ -93,7 +93,7 @@ public class DataTestClass {
         UserService.insertOrUpdateUser(a);
         Admin adm = UserService.getUserById(a.getId()).toAdmin();
         System.out.println(a.equals(adm));
-        UserService.deleteUserById(a.getId());
+        UserService.deleteUserById(a);
     }
 
     private static void testTicketDAO(ObjectArray ticketRepo, Client client) {
@@ -112,6 +112,6 @@ public class DataTestClass {
         System.out.println(TicketService.getTicketByUserId(client.getId()) + "\n-----------------------------------------------");
         TicketService.insertOrUpdateTicket(new BusTicket(ticket));
         System.out.println(TicketService.getTicketById(ticket.getId()) + "\n----------------------------------------------");
-        TicketService.deleteTicketById(ticket.getId());
+        TicketService.deleteTicketById(ticket);
     }
 }
