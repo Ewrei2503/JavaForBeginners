@@ -62,8 +62,8 @@ public interface UserMapper extends CommonMapper{
     }
 
     default Set<TicketEntity> mapTickets(User user) {
-        if(user instanceof Client cl) {
-            return TicketMapper.INSTANCE.toEntitySet(cl.getTickets());
+        if(user instanceof Client client) {
+            return TicketMapper.INSTANCE.toEntitySet(client.getTickets());
         } else return null;
     }
 
