@@ -1,26 +1,25 @@
 package by.yahor_kulesh.dao;
 
 import by.yahor_kulesh.config.ConnectionConfig;
-import by.yahor_kulesh.model.tickets.BusTicket;
-import by.yahor_kulesh.model.tickets.ConcertTicket;
-import by.yahor_kulesh.model.tickets.Ticket;
+import by.yahor_kulesh.entity.TicketEntity;
+import by.yahor_kulesh.entity.UserEntity;
+import by.yahor_kulesh.entity.enums.TicketType;
 import by.yahor_kulesh.utils.ObjectArray;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.ZoneId;
+import java.sql.Types;
 import java.util.UUID;
 
 public class TicketDAO{
     private ResultSet rs = null;
 
-    public void insert(Ticket ticket){
+    public void insert(TicketEntity ticket){
         try(
                 Connection con = ConnectionConfig.getConnection();
-                PreparedStatement stat = con.prepareStatement("INSERT INTO ticket(id,user_id,ticket_type,creation_date) VALUES (?,?,CAST(? AS ticket_type),?)")
+                PreparedStatement stat = con.prepareStatement("INSERT INTO ticket(id,user_id,ticket_type,creation_date) VALUES (?,?,?,?)")
         ){
             prepareTicketForStatement(ticket, stat);
             stat.execute();
@@ -29,7 +28,7 @@ public class TicketDAO{
         }
     }
 
-    public Ticket getById(UUID id) {
+    public TicketEntity getById(UUID id) {
         try(
                 Connection con = ConnectionConfig.getConnection();
                 PreparedStatement stat = con.prepareStatement("SELECT * FROM ticket where id=?")
@@ -63,10 +62,10 @@ public class TicketDAO{
         }
     }
 
-    public void update(Ticket ticket){
+    public void update(TicketEntity ticket){
         try(
                 Connection con = ConnectionConfig.getConnection();
-                PreparedStatement stat = con.prepareStatement("UPDATE ticket SET id=?,user_id=?,ticket_type=CAST(? AS ticket_type),creation_date=? WHERE id=?")
+                PreparedStatement stat = con.prepareStatement("UPDATE ticket SET id=?,user_id=?,ticket_type=?,creation_date=? WHERE id=?")
         ){
             prepareTicketForStatement(ticket, stat);
             stat.setObject(5,ticket.getId());
@@ -88,23 +87,19 @@ public class TicketDAO{
         }
     }
 
-    private void prepareTicketForStatement(Ticket ticket, PreparedStatement stat) throws SQLException {
+    private void prepareTicketForStatement(TicketEntity ticket, PreparedStatement stat) throws SQLException {
         stat.setObject(1,ticket.getId());
-        stat.setObject(2,ticket.getUserId());
-        stat.setObject(3,ticket instanceof ConcertTicket ? "concert": (ticket instanceof BusTicket ?"bus":"not defined"));
-        stat.setTimestamp(4, Timestamp.valueOf(ticket.getCreationTime().toLocalDateTime()));
+        stat.setObject(2,ticket.getUser()==null?null:ticket.getUser().getId());
+        stat.setObject(3,ticket.getType(), Types.OTHER);
+        stat.setTimestamp(4, ticket.getCreationTime());
     }
 
-    private Ticket getTicketFromDB() throws SQLException {
-        Ticket ticket;
-        if(rs.getString(3).equals("concert")) {
-            ticket = new ConcertTicket();
-        } else if(rs.getString(3).equals("bus")) {
-            ticket = new BusTicket();
-        } else ticket = new Ticket();
+    private TicketEntity getTicketFromDB() throws SQLException {
+        TicketEntity ticket = new TicketEntity();
         ticket.setId(UUID.fromString(rs.getString(1)));
-        ticket.setUserId(UUID.fromString(rs.getString(2)));
-        ticket.setCreationTime(rs.getTimestamp(4).toLocalDateTime().atZone(ZoneId.systemDefault()));
+        ticket.setUser(new UserEntity(rs.getString(2) == null?null:UUID.fromString(rs.getString(2))));
+        ticket.setType(TicketType.valueOf(rs.getString(3)));
+        ticket.setCreationTime(rs.getTimestamp(4));
         return ticket;
     }
 }
