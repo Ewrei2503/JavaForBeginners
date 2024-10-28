@@ -91,7 +91,7 @@ public class DataTestClass {
     private static void testUserDAO() {
         Admin a = new Admin();
         UserService.insertOrUpdateUser(a);
-        Admin adm = UserService.getUserById(a.getId()).toAdmin();
+        Admin adm = (Admin) UserService.getUserById(a.getId());
         System.out.println(a.equals(adm));
         UserService.deleteUserById(a.getId());
     }

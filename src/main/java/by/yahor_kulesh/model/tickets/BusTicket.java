@@ -1,9 +1,12 @@
 package by.yahor_kulesh.model.tickets;
 
+import lombok.Getter;
+
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.UUID;
 
+@Getter
 public class BusTicket extends Ticket{
     private final double backpackWeight;
 
@@ -29,10 +32,6 @@ public class BusTicket extends Ticket{
     public BusTicket(Ticket ticket, double backpackWeight) {
         super(ticket);
         this.backpackWeight = backpackWeight;
-    }
-
-    public double getBackpackWeight() {
-        return backpackWeight;
     }
 
 

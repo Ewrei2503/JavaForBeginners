@@ -1,9 +1,12 @@
 package by.yahor_kulesh.model.tickets;
 
+import lombok.Getter;
+
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.UUID;
 
+@Getter
 public class ConcertTicket extends Ticket {
 
     private final String concertHall;
@@ -56,22 +59,8 @@ public class ConcertTicket extends Ticket {
     }
 
 
-
-
     public void setSector(String sector) {
         this.sector = Sector.valueOf(validateStringLimits(sector,"Sector" ,new char[][]{{'A','C'}, {'a','c'}}));
-    }
-
-    public Sector getSector() {
-        return sector;
-    }
-
-    public String getConcertHall() {
-        return concertHall;
-    }
-
-    public String getEventCode() {
-        return eventCode;
     }
 
     public boolean isPromo() {

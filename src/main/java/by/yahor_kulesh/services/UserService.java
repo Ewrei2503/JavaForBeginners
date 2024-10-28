@@ -1,6 +1,7 @@
 package by.yahor_kulesh.services;
 
 import by.yahor_kulesh.dao.UserDAO;
+import by.yahor_kulesh.mappers.UserMapper;
 import by.yahor_kulesh.model.Data;
 import by.yahor_kulesh.model.users.User;
 
@@ -15,8 +16,8 @@ public class UserService extends Data {
             System.err.println("User or user's ID cannot be null");
             return;
         }if(userDAO.getById(user.getId())==null) {
-            userDAO.insert(user);
-        }else userDAO.update(user);
+            userDAO.insert(UserMapper.INSTANCE.toEntity(user));
+        }else userDAO.update(UserMapper.INSTANCE.toEntity(user));
     }
 
     public static void deleteUserById(UUID id) {
@@ -33,6 +34,6 @@ public class UserService extends Data {
         if(id==null) {
             System.err.println("User's ID cannot be null");
             return null;
-        } else return userDAO.getById(id);
+        } else return UserMapper.INSTANCE.toModel(userDAO.getById(id));
     }
 }

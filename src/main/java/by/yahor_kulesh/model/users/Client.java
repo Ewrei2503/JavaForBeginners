@@ -2,12 +2,16 @@ package by.yahor_kulesh.model.users;
 
 import by.yahor_kulesh.model.tickets.Ticket;
 import by.yahor_kulesh.services.TicketService;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Setter
+@Getter
 public class Client extends User {
-    private final Set<Ticket> tickets = new HashSet<>();
+    private Set<Ticket> tickets = new HashSet<>();
 
     public Client() {
     }
@@ -21,13 +25,12 @@ public class Client extends User {
         TicketService.insertOrUpdateTicket(ticket);
         System.out.println("Client got ticket:" + ticket.getId() + "\n");
         tickets.add(ticket);
-
     }
 
     @Override
     public boolean equals(Object o) {
         if(this == o) return true;
-        if(!(o instanceof Client client)) return false;
+        if(!(o instanceof Client)) return false;
         return super.equals(o);
     }
 

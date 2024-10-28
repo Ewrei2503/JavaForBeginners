@@ -1,6 +1,7 @@
 package by.yahor_kulesh.services;
 
 import by.yahor_kulesh.dao.TicketDAO;
+import by.yahor_kulesh.mappers.TicketMapper;
 import by.yahor_kulesh.model.Data;
 import by.yahor_kulesh.model.tickets.Ticket;
 import by.yahor_kulesh.utils.ObjectArray;
@@ -16,8 +17,8 @@ public class TicketService extends Data{
             System.err.println("Ticket or ticket's ID cannot be null");
             return;
         }if(getTicketById(ticket.getId())==null) {
-            ticketDAO.insert(ticket);
-        } else ticketDAO.update(ticket);
+            ticketDAO.insert(TicketMapper.INSTANCE.toEntity(ticket));
+        } else ticketDAO.update(TicketMapper.INSTANCE.toEntity(ticket));
     }
 
     public static void deleteTicketById(UUID id) {
@@ -32,7 +33,7 @@ public class TicketService extends Data{
         if(id==null){
             System.err.println("Ticket's ID cannot be null");
             return null;
-        } else return ticketDAO.getById(id);
+        } else return TicketMapper.INSTANCE.toModel(ticketDAO.getById(id));
     }
 
     public static ObjectArray getTicketByUserId(UUID userId) {
