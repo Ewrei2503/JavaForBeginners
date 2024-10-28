@@ -1,16 +1,22 @@
 package by.yahor_kulesh.services;
-
 import by.yahor_kulesh.dao.TicketDAO;
 import by.yahor_kulesh.mappers.TicketMapper;
 import by.yahor_kulesh.model.Data;
 import by.yahor_kulesh.model.tickets.Ticket;
 import by.yahor_kulesh.utils.ObjectArray;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Service
 public class TicketService extends Data{
 
-    private static final TicketDAO ticketDAO = new TicketDAO();
+    private static TicketDAO ticketDAO;
+
+    public TicketService(TicketDAO ticketDAO) {
+        TicketService.ticketDAO = ticketDAO;
+    }
+
 
     public static void insertOrUpdateTicket(Ticket ticket) {
         if(ticket==null || ticket.getId()==null) {
@@ -20,7 +26,6 @@ public class TicketService extends Data{
             ticketDAO.insert(TicketMapper.INSTANCE.toEntity(ticket));
         } else ticketDAO.update(TicketMapper.INSTANCE.toEntity(ticket));
     }
-
     public static void deleteTicketById(UUID id) {
         if(getTicketById(id)==null) {
             System.err.println("Ticket not found");
@@ -28,20 +33,16 @@ public class TicketService extends Data{
             ticketDAO.deleteById(id);
         }
     }
-
     public static Ticket getTicketById(UUID id){
         if(id==null){
             System.err.println("Ticket's ID cannot be null");
             return null;
         } else return TicketMapper.INSTANCE.toModel(ticketDAO.getById(id));
     }
-
     public static ObjectArray getTicketByUserId(UUID userId) {
         if(userId==null){
             System.err.println("User's ID cannot be null");
             return null;
         }return ticketDAO.getByUserId(userId);
     }
-
-
 }

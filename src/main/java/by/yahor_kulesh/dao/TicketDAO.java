@@ -1,10 +1,10 @@
 package by.yahor_kulesh.dao;
-
 import by.yahor_kulesh.config.ConnectionConfig;
 import by.yahor_kulesh.entity.TicketEntity;
 import by.yahor_kulesh.entity.UserEntity;
 import by.yahor_kulesh.entity.enums.TicketType;
 import by.yahor_kulesh.utils.ObjectArray;
+import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,12 +13,20 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.UUID;
 
+@Component
 public class TicketDAO{
+
+    private final ConnectionConfig connectionConfig;
+
     private ResultSet rs = null;
+
+    public TicketDAO(ConnectionConfig connectionConfig) {
+        this.connectionConfig = connectionConfig;
+    }
 
     public void insert(TicketEntity ticket){
         try(
-                Connection con = ConnectionConfig.getConnection();
+                Connection con = connectionConfig.getConnection();
                 PreparedStatement stat = con.prepareStatement("INSERT INTO ticket(id,user_id,ticket_type,creation_date) VALUES (?,?,?,?)")
         ){
             prepareTicketForStatement(ticket, stat);
@@ -30,7 +38,7 @@ public class TicketDAO{
 
     public TicketEntity getById(UUID id) {
         try(
-                Connection con = ConnectionConfig.getConnection();
+                Connection con = connectionConfig.getConnection();
                 PreparedStatement stat = con.prepareStatement("SELECT * FROM ticket where id=?")
         ) {
             stat.setObject(1, id);
@@ -43,11 +51,10 @@ public class TicketDAO{
             return null;
         }
     }
-
     public ObjectArray getByUserId(UUID id) {
         ObjectArray tickets = new ObjectArray();
         try(
-                Connection con = ConnectionConfig.getConnection();
+                Connection con = connectionConfig.getConnection();
                 PreparedStatement stat = con.prepareStatement("SELECT * FROM ticket where user_id=?")
         ) {
             stat.setObject(1, id);
@@ -64,7 +71,7 @@ public class TicketDAO{
 
     public void update(TicketEntity ticket){
         try(
-                Connection con = ConnectionConfig.getConnection();
+                Connection con = connectionConfig.getConnection();
                 PreparedStatement stat = con.prepareStatement("UPDATE ticket SET id=?,user_id=?,ticket_type=?,creation_date=? WHERE id=?")
         ){
             prepareTicketForStatement(ticket, stat);
@@ -77,7 +84,7 @@ public class TicketDAO{
 
     public void deleteById(UUID id){
         try(
-                Connection con = ConnectionConfig.getConnection();
+                Connection con = connectionConfig.getConnection();
                 PreparedStatement stat = con.prepareStatement("DELETE FROM ticket WHERE id=?")
         ){
             stat.setObject(1, id);
@@ -86,14 +93,12 @@ public class TicketDAO{
             System.out.println(e.getMessage());
         }
     }
-
     private void prepareTicketForStatement(TicketEntity ticket, PreparedStatement stat) throws SQLException {
         stat.setObject(1,ticket.getId());
         stat.setObject(2,ticket.getUser()==null?null:ticket.getUser().getId());
         stat.setObject(3,ticket.getType(), Types.OTHER);
         stat.setTimestamp(4, ticket.getCreationTime());
     }
-
     private TicketEntity getTicketFromDB() throws SQLException {
         TicketEntity ticket = new TicketEntity();
         ticket.setId(UUID.fromString(rs.getString(1)));

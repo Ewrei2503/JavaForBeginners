@@ -4,12 +4,18 @@ import by.yahor_kulesh.dao.UserDAO;
 import by.yahor_kulesh.mappers.UserMapper;
 import by.yahor_kulesh.model.Data;
 import by.yahor_kulesh.model.users.User;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Service
 public class UserService extends Data {
-    private static final UserDAO userDAO = new UserDAO();
 
+    private static UserDAO userDAO;
+
+    public UserService(UserDAO userDAO) {
+        UserService.userDAO = userDAO;
+    }
 
     public static void insertOrUpdateUser(User user) {
         if(user==null || user.getId()==null) {
