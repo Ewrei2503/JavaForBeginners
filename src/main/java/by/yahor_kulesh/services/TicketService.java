@@ -5,12 +5,19 @@ import by.yahor_kulesh.mappers.TicketMapper;
 import by.yahor_kulesh.model.Data;
 import by.yahor_kulesh.model.tickets.Ticket;
 import by.yahor_kulesh.utils.ObjectArray;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Service
 public class TicketService extends Data{
 
-    private static final TicketDAO ticketDAO = new TicketDAO();
+    private static TicketDAO ticketDAO;
+
+    public TicketService(TicketDAO ticketDAO) {
+        TicketService.ticketDAO = ticketDAO;
+    }
+
 
     public static void insertOrUpdateTicket(Ticket ticket) {
         if(ticket==null || ticket.getId()==null) {
