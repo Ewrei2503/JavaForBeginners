@@ -1,5 +1,5 @@
 package by.yahor_kulesh.dao;
-import by.yahor_kulesh.config.ConnectionConfig;
+
 import by.yahor_kulesh.entity.TicketEntity;
 import by.yahor_kulesh.entity.UserEntity;
 import by.yahor_kulesh.entity.enums.TicketType;
@@ -7,6 +7,7 @@ import by.yahor_kulesh.utils.ObjectArray;
 import org.springframework.stereotype.Repository;
 
 
+import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,17 +17,17 @@ import java.util.UUID;
 @Repository
 public class TicketDAO{
 
-    private final ConnectionConfig connectionConfig;
+    private final DataSource dataSource;
 
     private ResultSet rs = null;
 
-    public TicketDAO(ConnectionConfig connectionConfig) {
-        this.connectionConfig = connectionConfig;
+    public TicketDAO(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public void insert(TicketEntity ticket){
         try(
-                PreparedStatement statement = connectionConfig.dataSource().getConnection().prepareStatement("INSERT INTO ticket(id,user_id,ticket_type,creation_date) VALUES (?,?,?,?)")
+                PreparedStatement statement = dataSource.getConnection().prepareStatement("INSERT INTO ticket(id,user_id,ticket_type,creation_date) VALUES (?,?,?,?)")
         ){
             prepareTicketForStatement(ticket, statement);
             statement.execute();
@@ -37,7 +38,7 @@ public class TicketDAO{
 
     public TicketEntity getById(UUID id) {
         try(
-                PreparedStatement statement = connectionConfig.dataSource().getConnection().prepareStatement("SELECT * FROM ticket where id=?")
+                PreparedStatement statement = dataSource.getConnection().prepareStatement("SELECT * FROM ticket where id=?")
         ) {
             statement.setObject(1, id);
             rs = statement.executeQuery();
@@ -53,7 +54,7 @@ public class TicketDAO{
     public ObjectArray getByUserId(UUID id) {
         ObjectArray tickets = new ObjectArray();
         try(
-                PreparedStatement statement = connectionConfig.dataSource().getConnection().prepareStatement("SELECT * FROM ticket where user_id=?")
+                PreparedStatement statement = dataSource.getConnection().prepareStatement("SELECT * FROM ticket where user_id=?")
         ) {
             statement.setObject(1, id);
             rs = statement.executeQuery();
@@ -69,7 +70,7 @@ public class TicketDAO{
 
     public void update(TicketEntity ticket){
         try(
-                PreparedStatement statement = connectionConfig.dataSource().getConnection().prepareStatement("UPDATE ticket SET id=?,user_id=?,ticket_type=?,creation_date=? WHERE id=?")
+                PreparedStatement statement = dataSource.getConnection().prepareStatement("UPDATE ticket SET id=?,user_id=?,ticket_type=?,creation_date=? WHERE id=?")
         ){
             prepareTicketForStatement(ticket, statement);
             statement.setObject(5,ticket.getId());
@@ -81,7 +82,7 @@ public class TicketDAO{
 
     public void deleteById(UUID id){
         try(
-                PreparedStatement statement = connectionConfig.dataSource().getConnection().prepareStatement("DELETE FROM ticket WHERE id=?")
+                PreparedStatement statement = dataSource.getConnection().prepareStatement("DELETE FROM ticket WHERE id=?")
         ){
             statement.setObject(1, id);
             statement.execute();
