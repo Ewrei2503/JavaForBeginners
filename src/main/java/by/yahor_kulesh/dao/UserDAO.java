@@ -5,7 +5,6 @@ import by.yahor_kulesh.entity.enums.Role;
 import org.springframework.stereotype.Component;
 
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,11 +23,10 @@ public class UserDAO{
 
     public void insert(UserEntity user){
         try(
-                Connection con = connectionConfig.getConnection();
-                PreparedStatement stat = con.prepareStatement("INSERT INTO usr(id,name,creation_date,role) VALUES (?,?,?,?)")
+                PreparedStatement statement = connectionConfig.dataSource().getConnection().prepareStatement("INSERT INTO usr(id,name,creation_date,role) VALUES (?,?,?,?)")
         ){
-            prepareUserForStatement(user, stat);
-            stat.execute();
+            prepareUserForStatement(user, statement);
+            statement.execute();
         }catch(SQLException e){
             System.err.println(e.getMessage());
         }
@@ -36,11 +34,10 @@ public class UserDAO{
 
     public UserEntity getById(UUID id){
         try(
-                Connection con = connectionConfig.getConnection();
-                PreparedStatement stat = con.prepareStatement("SELECT * FROM usr where id=?")
+                PreparedStatement statement = connectionConfig.dataSource().getConnection().prepareStatement("SELECT * FROM usr where id=?")
         ) {
-            stat.setObject(1, id);
-            ResultSet rs = stat.executeQuery();
+            statement.setObject(1, id);
+            ResultSet rs = statement.executeQuery();
             if(rs.next()) {
                 UserEntity user = new UserEntity();
                 user.setId(UUID.fromString(rs.getString(1)));
@@ -57,12 +54,11 @@ public class UserDAO{
 
     public void update(UserEntity user){
         try(
-                Connection con = connectionConfig.getConnection();
-                PreparedStatement stat = con.prepareStatement("UPDATE usr SET id=?,name=?,creation_date=?,role=? WHERE id=?")
+                PreparedStatement statement = connectionConfig.dataSource().getConnection().prepareStatement("UPDATE usr SET id=?,name=?,creation_date=?,role=? WHERE id=?")
         ){
-            prepareUserForStatement(user, stat);
-            stat.setObject(5,user.getId());
-            stat.executeUpdate();
+            prepareUserForStatement(user, statement);
+            statement.setObject(5,user.getId());
+            statement.executeUpdate();
         } catch (SQLException e){
             System.err.println(e.getMessage());
         }
@@ -70,12 +66,11 @@ public class UserDAO{
 
     public void deleteById(UUID id){
         try(
-                Connection con = connectionConfig.getConnection();
-                PreparedStatement stat = con.prepareStatement("DELETE FROM usr WHERE id=?")
+                PreparedStatement statement = connectionConfig.dataSource().getConnection().prepareStatement("DELETE FROM usr WHERE id=?")
         ){
             if(id==null) throw new SQLException("Cannot delete: id is null");
-            stat.setObject(1, id);
-            stat.execute();
+            statement.setObject(1, id);
+            statement.execute();
         } catch(SQLException e) {
             System.err.println(e.getMessage());
         }

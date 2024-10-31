@@ -4,16 +4,16 @@ import by.yahor_kulesh.entity.TicketEntity;
 import by.yahor_kulesh.entity.UserEntity;
 import by.yahor_kulesh.entity.enums.TicketType;
 import by.yahor_kulesh.utils.ObjectArray;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.UUID;
 
-@Component
+@Repository
 public class TicketDAO{
 
     private final ConnectionConfig connectionConfig;
@@ -26,11 +26,10 @@ public class TicketDAO{
 
     public void insert(TicketEntity ticket){
         try(
-                Connection con = connectionConfig.getConnection();
-                PreparedStatement stat = con.prepareStatement("INSERT INTO ticket(id,user_id,ticket_type,creation_date) VALUES (?,?,?,?)")
+                PreparedStatement statement = connectionConfig.dataSource().getConnection().prepareStatement("INSERT INTO ticket(id,user_id,ticket_type,creation_date) VALUES (?,?,?,?)")
         ){
-            prepareTicketForStatement(ticket, stat);
-            stat.execute();
+            prepareTicketForStatement(ticket, statement);
+            statement.execute();
         }catch(SQLException e){
             System.err.println(e.getMessage());
         }
@@ -38,11 +37,10 @@ public class TicketDAO{
 
     public TicketEntity getById(UUID id) {
         try(
-                Connection con = connectionConfig.getConnection();
-                PreparedStatement stat = con.prepareStatement("SELECT * FROM ticket where id=?")
+                PreparedStatement statement = connectionConfig.dataSource().getConnection().prepareStatement("SELECT * FROM ticket where id=?")
         ) {
-            stat.setObject(1, id);
-            rs = stat.executeQuery();
+            statement.setObject(1, id);
+            rs = statement.executeQuery();
             if(rs.next()){
                 return getTicketFromDB();
             }else return null;
@@ -51,14 +49,14 @@ public class TicketDAO{
             return null;
         }
     }
+
     public ObjectArray getByUserId(UUID id) {
         ObjectArray tickets = new ObjectArray();
         try(
-                Connection con = connectionConfig.getConnection();
-                PreparedStatement stat = con.prepareStatement("SELECT * FROM ticket where user_id=?")
+                PreparedStatement statement = connectionConfig.dataSource().getConnection().prepareStatement("SELECT * FROM ticket where user_id=?")
         ) {
-            stat.setObject(1, id);
-            rs = stat.executeQuery();
+            statement.setObject(1, id);
+            rs = statement.executeQuery();
             while(rs.next()) {
                 tickets.add(getTicketFromDB());
             }
@@ -71,12 +69,11 @@ public class TicketDAO{
 
     public void update(TicketEntity ticket){
         try(
-                Connection con = connectionConfig.getConnection();
-                PreparedStatement stat = con.prepareStatement("UPDATE ticket SET id=?,user_id=?,ticket_type=?,creation_date=? WHERE id=?")
+                PreparedStatement statement = connectionConfig.dataSource().getConnection().prepareStatement("UPDATE ticket SET id=?,user_id=?,ticket_type=?,creation_date=? WHERE id=?")
         ){
-            prepareTicketForStatement(ticket, stat);
-            stat.setObject(5,ticket.getId());
-            stat.executeUpdate();
+            prepareTicketForStatement(ticket, statement);
+            statement.setObject(5,ticket.getId());
+            statement.executeUpdate();
         } catch (SQLException e){
             System.err.println(e.getMessage());
         }
@@ -84,11 +81,10 @@ public class TicketDAO{
 
     public void deleteById(UUID id){
         try(
-                Connection con = connectionConfig.getConnection();
-                PreparedStatement stat = con.prepareStatement("DELETE FROM ticket WHERE id=?")
+                PreparedStatement statement = connectionConfig.dataSource().getConnection().prepareStatement("DELETE FROM ticket WHERE id=?")
         ){
-            stat.setObject(1, id);
-            stat.execute();
+            statement.setObject(1, id);
+            statement.execute();
         } catch(SQLException e) {
             System.out.println(e.getMessage());
         }
