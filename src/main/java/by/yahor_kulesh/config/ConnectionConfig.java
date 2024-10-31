@@ -1,15 +1,28 @@
 package by.yahor_kulesh.config;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import org.postgresql.ds.PGSimpleDataSource;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
+
+
+@Component
 public class ConnectionConfig {
-    private static final String url = "jdbc:postgresql://localhost:5432/my_ticket_service_db";
-    private static final String user = "postgres";
-    private static final String password = "postgres";
+    @Value("${connectionConfig.url}")
+    private String url;
+    @Value("${connectionConfig.username}")
+    private String user;
+    @Value("${connectionConfig.password}")
+    private String password;
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(url, user, password);
+    @Bean
+    public DataSource dataSource(){
+        PGSimpleDataSource dataSource = new PGSimpleDataSource();
+        dataSource.setURL(url);
+        dataSource.setUser(user);
+        dataSource.setPassword(password);
+        return dataSource;
     }
 }
