@@ -1,7 +1,8 @@
 package by.yahor_kulesh.dao;
 import by.yahor_kulesh.entity.UserEntity;
 import by.yahor_kulesh.entity.enums.Role;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import javax.sql.DataSource;
@@ -22,12 +23,14 @@ public class UserDAO{
     }
 
 
+    @Transactional
     public void insert(UserEntity user){
         try(
                 PreparedStatement statement = dataSource.getConnection().prepareStatement("INSERT INTO usr(id,name,creation_date,role) VALUES (?,?,?,?)")
         ){
             prepareUserForStatement(user, statement);
             statement.execute();
+            throw new RuntimeException("Test DB Exception");
         }catch(SQLException e){
             System.err.println(e.getMessage());
         }
