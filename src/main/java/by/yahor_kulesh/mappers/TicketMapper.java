@@ -12,15 +12,31 @@ import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 import org.mapstruct.ObjectFactory;
 import org.mapstruct.factory.Mappers;
+import org.springframework.jdbc.core.RowMapper;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 
 @Mapper
-public interface TicketMapper extends CommonMapper{
+public interface TicketMapper extends CommonMapper, RowMapper<TicketEntity> {
 
     TicketMapper INSTANCE = Mappers.getMapper(TicketMapper.class);
+
+
+    default List<Ticket> toModel(List<TicketEntity> ticketEntityList){
+        if(ticketEntityList == null || ticketEntityList.isEmpty()) return Collections.emptyList();
+        List<Ticket> ticketList = new ArrayList<>();
+        for(TicketEntity ticketEntity : ticketEntityList){
+            ticketList.add(toModel(ticketEntity));
+        }
+        return ticketList;
+    }
 
 
     @ObjectFactory
@@ -95,6 +111,17 @@ public interface TicketMapper extends CommonMapper{
         } else {
             return userEntity.getId();
         }
+    }
+
+
+
+    default TicketEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+        TicketEntity ticket = new TicketEntity();
+        ticket.setId(UUID.fromString(rs.getString(1)));
+        ticket.setUser(new UserEntity(rs.getString(2) == null?null:UUID.fromString(rs.getString(2))));
+        ticket.setType(TicketType.valueOf(rs.getString(3)));
+        ticket.setCreationTime(rs.getTimestamp(4));
+        return ticket;
     }
 
 
