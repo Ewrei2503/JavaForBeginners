@@ -28,7 +28,7 @@ public class ApplicationContext {
     }
 
     @Bean
-    public File ticketData() {
+    public File ticketDataFile() {
         try {
             return new ClassPathResource("ticketData.txt").getFile();
         } catch (IOException e) {
