@@ -11,13 +11,13 @@ import java.util.UUID;
 @Service
 public class UserService extends Data {
 
-    private static UserDAO userDAO;
+    private final UserDAO userDAO;
 
     public UserService(UserDAO userDAO) {
-        UserService.userDAO = userDAO;
+        this.userDAO = userDAO;
     }
 
-    public static void insertOrUpdateUser(User user) {
+    public void insertOrUpdateUser(User user) {
         if(user==null || user.getId()==null) {
             System.err.println("User or user's ID cannot be null");
             return;
@@ -26,7 +26,7 @@ public class UserService extends Data {
         }else userDAO.update(UserMapper.INSTANCE.toEntity(user));
     }
 
-    public static void deleteUserById(UUID id) {
+    public void deleteUserById(UUID id) {
         if(id==null) {
             System.err.println("User's ID cannot be null");
         }else if(userDAO.getById(id)==null) {
@@ -36,7 +36,7 @@ public class UserService extends Data {
         }
     }
 
-    public static User getUserById(UUID id){
+    public User getUserById(UUID id){
         if(id==null) {
             System.err.println("User's ID cannot be null");
             return null;

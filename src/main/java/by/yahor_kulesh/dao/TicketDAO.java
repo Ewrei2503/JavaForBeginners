@@ -21,7 +21,7 @@ public class TicketDAO{
     @Transactional
     public void insert(TicketEntity ticket) {
 
-        jdbcTemplate.update("INSERT INTO ticket(id,user_id,ticket_type,creation_date) VALUES (?,?,?,?)",
+        jdbcTemplate.update("INSERT INTO ticket(id,user_id,ticket_type,creation_date) VALUES (?,?,?::ticket_type,?)",
                 ticket.getId(),
                 ticket.getUser()==null?null:ticket.getUser().getId(),
                 ticket.getType().name(),
@@ -40,7 +40,7 @@ public class TicketDAO{
 
     @Transactional
     public void update(TicketEntity ticket){
-        jdbcTemplate.update("UPDATE ticket SET id=?,user_id=?,ticket_type=?,creation_date=? WHERE id=?",
+        jdbcTemplate.update("UPDATE ticket SET id=?,user_id=?,ticket_type=?::ticket_type,creation_date=? WHERE id=?",
                 ticket.getId(),
                 ticket.getUser()==null?null:ticket.getUser().getId(),
                 ticket.getType().name(),

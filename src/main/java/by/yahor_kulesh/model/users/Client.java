@@ -1,7 +1,6 @@
 package by.yahor_kulesh.model.users;
 
 import by.yahor_kulesh.model.tickets.Ticket;
-import by.yahor_kulesh.services.TicketService;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,13 +17,6 @@ public class Client extends User {
 
     public Client(String name){
         this.setName(name);
-    }
-
-    public void getTicket(Ticket ticket) {
-        ticket.setUserId(this.getId());
-        TicketService.insertOrUpdateTicket(ticket);
-        System.out.println("Client got ticket:" + ticket.getId() + "\n");
-        tickets.add(ticket);
     }
 
     @Override

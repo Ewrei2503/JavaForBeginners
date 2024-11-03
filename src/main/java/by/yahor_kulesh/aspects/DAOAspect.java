@@ -36,14 +36,10 @@ public class DAOAspect {
         try {
             String method = joinPoint.getSignature().getName();
             if(
-                    (method.contains("insert") && !insertUser) ||
-                    (method.contains("delete") && !deleteUser) ||
-                    (method.contains("update") && !updateUser) ||
-                    (method.contains("get") && !getUser) ||
-                    (method.contains("insert") && !insertTicket) ||
-                    (method.contains("delete") && !deleteTicket) ||
-                    (method.contains("update") && !updateTicket) ||
-                    (method.contains("get") && !getTicket)
+                    (method.contains("insert") && !insertUser) || (method.contains("delete") && !deleteUser) ||
+                    (method.contains("update") && !updateUser) || (method.contains("get") && !getUser) ||
+                    (method.contains("insert") && !insertTicket) || (method.contains("delete") && !deleteTicket) ||
+                    (method.contains("update") && !updateTicket) || (method.contains("get") && !getTicket)
             ){
                 throw new SQLException("This type of operation( " + method + ") is not allowed!");
             }

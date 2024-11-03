@@ -21,17 +21,17 @@ public class UserDAO{
 
     @Transactional
     public void insert(UserEntity user){
-        jdbcTemplate.update("INSERT INTO usr(id,name,creation_date,role) VALUES (?,?,?,?)",user.getId(),user.getName(), user.getCreationTime(), user.getRole().name());
+        jdbcTemplate.update("INSERT INTO usr(id,name,creation_date,role) VALUES (?,?,?,?::role_type)",user.getId(),user.getName(), user.getCreationTime(), user.getRole().name());
     }
 
     @Transactional
     public UserEntity getById(UUID id){
-            return jdbcTemplate.query("SELECT * FROM usr where id=?", UserMapper.INSTANCE, id).stream().findAny().orElse(null);
+        return jdbcTemplate.query("SELECT * FROM usr where id=?", UserMapper.INSTANCE, id).stream().findAny().orElse(null);
     }
 
     @Transactional
     public void update(UserEntity user){
-        jdbcTemplate.update("UPDATE usr SET id=?,name=?,creation_date=?,role=? WHERE id=?",user.getId(),user.getName(), user.getCreationTime(), user.getRole().name());
+        jdbcTemplate.update("UPDATE usr SET id=?,name=?,creation_date=?,role=?::role_type WHERE id=?",user.getId(),user.getName(), user.getCreationTime(), user.getRole().name());
     }
 
     @Transactional
