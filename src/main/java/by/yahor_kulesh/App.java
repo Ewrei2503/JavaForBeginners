@@ -9,7 +9,6 @@ import by.yahor_kulesh.utils.DataTestClass;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 
-
 public class App extends Data {
 
     public static final AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ApplicationContext.class);

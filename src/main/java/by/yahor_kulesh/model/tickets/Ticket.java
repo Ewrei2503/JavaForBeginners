@@ -22,6 +22,14 @@ public class Ticket extends Data {
     @Setter
     private UUID userId;
 
+    @Setter
+    private String ticketType;
+
+    @Setter
+    private String ticketClass;
+
+    @Setter
+    private String startDate;
 
 
 
@@ -48,10 +56,6 @@ public class Ticket extends Data {
         this.userId = ticket.userId;
     }
 
-
-    /**I've deleted from here ticket creation time,
-     * because it will be always false
-     * */
     @Override
     public boolean equals(Object o) {
         if(this == o) return true;
@@ -70,9 +74,10 @@ public class Ticket extends Data {
         return "Ticket Info:\n" +
                        "ID: " + this.getId() +
                        ";\nUser's ID: " + this.getUserId() +
+                       ";\nTicket Class: " + this.getTicketClass() +
+                       ";\nTicket Type: " + this.getTicketType() +
                        ";\nWas bought: " + (this.getCreationTime() == null? null: this.getCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
-                       ";\nDate of event: " + (this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
-
+                       ";\nDate of event: " +(this.getStartDate()!= null? this.getStartDate():(this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME))) +
                        ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
                        "$.\n\n\n";
     }

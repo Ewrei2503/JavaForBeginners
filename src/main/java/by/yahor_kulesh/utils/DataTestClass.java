@@ -26,6 +26,7 @@ public class DataTestClass {
     }
 
     public void testTicketService() {
+        readTicketsFromFile();
         ConcertTicket concert = testTicket();
         Client client = testUser(concert);
         ObjectArray ticketRepo=null;
@@ -37,6 +38,10 @@ public class DataTestClass {
         testObjectSet(client);
         testTicketDAO(ticketRepo, client);
         testUserDAO();
+    }
+
+    private void readTicketsFromFile() {
+        System.out.println(ticketService.getTicketsFromFile());
     }
 
     private ConcertTicket testTicket() {
