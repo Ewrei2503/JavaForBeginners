@@ -1,6 +1,7 @@
 package by.yahor_kulesh.dao;
 
 import by.yahor_kulesh.entity.UserEntity;
+import by.yahor_kulesh.entity.enums.UserStatus;
 import by.yahor_kulesh.mappers.UserMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -21,7 +22,7 @@ public class UserDAO{
 
     @Transactional
     public void insert(UserEntity user){
-        jdbcTemplate.update("INSERT INTO usr(id,name,creation_date,role) VALUES (?,?,?,?::role_type)",user.getId(),user.getName(), user.getCreationTime(), user.getRole().name());
+        jdbcTemplate.update("INSERT INTO usr(id,name,creation_date,role,status) VALUES (?,?,?,?::role_type,?::status_type)",user.getId(),user.getName(), user.getCreationTime(), user.getRole().name(), UserStatus.SAVED.name());
     }
 
     @Transactional
@@ -30,12 +31,17 @@ public class UserDAO{
     }
 
     @Transactional
+    public UserStatus getStatusById(UUID id){
+        return jdbcTemplate.queryForObject("SELECT status FROM usr where id=?", UserStatus.class,id);
+    }
+
+    @Transactional
     public void update(UserEntity user){
         jdbcTemplate.update("UPDATE usr SET id=?,name=?,creation_date=?,role=?::role_type WHERE id=?",user.getId(),user.getName(), user.getCreationTime(), user.getRole().name());
     }
 
     @Transactional
-    public void deleteById(UUID id){
-        jdbcTemplate.update("DELETE FROM usr WHERE id=?",id);
+    public void deleteById(UUID id) {
+        jdbcTemplate.update("DELETE FROM usr WHERE id=?", id);
     }
 }

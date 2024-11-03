@@ -1,6 +1,7 @@
 package by.yahor_kulesh.dao;
 
 import by.yahor_kulesh.entity.TicketEntity;
+import by.yahor_kulesh.entity.enums.UserStatus;
 import by.yahor_kulesh.mappers.TicketMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -52,5 +53,17 @@ public class TicketDAO{
     @Transactional
     public void deleteById(UUID id){
         jdbcTemplate.update("DELETE FROM ticket WHERE id=?", id);
+    }
+
+    @Transactional
+    public void insertTicketToUser(TicketEntity ticket){
+        jdbcTemplate.update("UPDATE usr SET status=?::status_type WHERE id=?", UserStatus.ACTIVATED.name(),ticket.getUser().getId());
+        insert(ticket);
+    }
+
+    @Transactional
+    public void updateTicketToUser(TicketEntity ticket){
+        jdbcTemplate.update("UPDATE usr SET status=?::status_type WHERE id=?", UserStatus.ACTIVATED.name(),ticket.getUser().getId());
+        update(ticket);
     }
 }
