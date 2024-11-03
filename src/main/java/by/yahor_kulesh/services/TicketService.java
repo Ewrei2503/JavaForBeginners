@@ -23,11 +23,11 @@ import java.util.UUID;
 public class TicketService extends Data{
 
     private final TicketDAO ticketDAO;
-    private final File ticketData;
+    private final File ticketDataFile;
 
-    public TicketService(TicketDAO ticketDAO, File ticketData) {
+    public TicketService(TicketDAO ticketDAO, File ticketDataFile) {
         this.ticketDAO = ticketDAO;
-        this.ticketData = ticketData;
+        this.ticketDataFile = ticketDataFile;
     }
 
 
@@ -73,7 +73,7 @@ public class TicketService extends Data{
     public List<Ticket> getTicketsFromFile(){
         List<Ticket> tickets = new ArrayList<>();
         try(
-            BufferedReader br = new BufferedReader(new FileReader((ticketData)))
+            BufferedReader br = new BufferedReader(new FileReader((ticketDataFile)))
         ){
             String input;
              while((input = br.readLine())!=null) {
@@ -86,7 +86,7 @@ public class TicketService extends Data{
     }
 
     private Ticket getTicketFromString(String input){
-        Ticket ticket = null;
+        Ticket ticket;
         try {
             ticket = new ObjectMapper().readValue(input, Ticket.class);
         }
