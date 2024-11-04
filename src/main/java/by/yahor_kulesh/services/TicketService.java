@@ -63,8 +63,8 @@ public class TicketService extends Data{
     public void clientGetTicket(Ticket ticket, Client client) {
         ticket.setUserId(client.getId());
         if(ticketDAO.getById(ticket.getId())==null) {
-            ticketDAO.insertTicketToUser(TicketMapper.INSTANCE.toEntity(ticket));
-        } else ticketDAO.updateTicketToUser(TicketMapper.INSTANCE.toEntity(ticket));
+            ticketDAO.insertTicketAndUpdateUser(TicketMapper.INSTANCE.toEntity(ticket));
+        } else ticketDAO.updateTicketAndUpdateUser(TicketMapper.INSTANCE.toEntity(ticket));
         System.out.println("Client got ticket:" + ticket.getId() + "\n");
         client.getTickets().add(ticket);
     }

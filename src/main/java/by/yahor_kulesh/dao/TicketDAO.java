@@ -21,7 +21,6 @@ public class TicketDAO{
 
     @Transactional
     public void insert(TicketEntity ticket) {
-
         jdbcTemplate.update("INSERT INTO ticket(id,user_id,ticket_type,creation_date) VALUES (?,?,?::ticket_type,?)",
                 ticket.getId(),
                 ticket.getUser()==null?null:ticket.getUser().getId(),
@@ -56,14 +55,25 @@ public class TicketDAO{
     }
 
     @Transactional
-    public void insertTicketToUser(TicketEntity ticket){
+    public void insertTicketAndUpdateUser(TicketEntity ticket){
         jdbcTemplate.update("UPDATE usr SET status=?::status_type WHERE id=?", UserStatus.ACTIVATED.name(),ticket.getUser().getId());
-        insert(ticket);
+        jdbcTemplate.update("INSERT INTO ticket(id,user_id,ticket_type,creation_date) VALUES (?,?,?::ticket_type,?)",
+                ticket.getId(),
+                ticket.getUser()==null?null:ticket.getUser().getId(),
+                ticket.getType().name(),
+                ticket.getCreationTime()
+        );
     }
 
     @Transactional
-    public void updateTicketToUser(TicketEntity ticket){
+    public void updateTicketAndUpdateUser(TicketEntity ticket){
         jdbcTemplate.update("UPDATE usr SET status=?::status_type WHERE id=?", UserStatus.ACTIVATED.name(),ticket.getUser().getId());
-        update(ticket);
+        jdbcTemplate.update("UPDATE ticket SET id=?,user_id=?,ticket_type=?::ticket_type,creation_date=? WHERE id=?",
+                ticket.getId(),
+                ticket.getUser()==null?null:ticket.getUser().getId(),
+                ticket.getType().name(),
+                ticket.getCreationTime(),
+                ticket.getId()
+        );
     }
 }
