@@ -1,6 +1,7 @@
 package by.yahor_kulesh.entity;
 
 import by.yahor_kulesh.entity.enums.Role;
+import by.yahor_kulesh.entity.enums.UserStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -24,6 +25,8 @@ public class UserEntity {
     private Timestamp creationTime;
 
     private Role role;
+
+    private UserStatus status;
 
     private Set<TicketEntity> tickets;
 }

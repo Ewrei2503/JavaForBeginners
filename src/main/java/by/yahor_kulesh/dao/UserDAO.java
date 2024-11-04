@@ -1,85 +1,47 @@
 package by.yahor_kulesh.dao;
+
 import by.yahor_kulesh.entity.UserEntity;
-import by.yahor_kulesh.entity.enums.Role;
-import org.springframework.stereotype.Component;
+import by.yahor_kulesh.entity.enums.UserStatus;
+import by.yahor_kulesh.mappers.UserMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 
-import javax.sql.DataSource;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
 import java.util.UUID;
 
 @Repository
 public class UserDAO{
 
+    private final JdbcTemplate jdbcTemplate;
 
-    private final DataSource dataSource;
-
-    public UserDAO(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public UserDAO(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
 
+    @Transactional
     public void insert(UserEntity user){
-        try(
-                PreparedStatement statement = dataSource.getConnection().prepareStatement("INSERT INTO usr(id,name,creation_date,role) VALUES (?,?,?,?)")
-        ){
-            prepareUserForStatement(user, statement);
-            statement.execute();
-        }catch(SQLException e){
-            System.err.println(e.getMessage());
-        }
+        jdbcTemplate.update("INSERT INTO usr(id,name,creation_date,role,status) VALUES (?,?,?,?::role_type,?::status_type)",user.getId(),user.getName(), user.getCreationTime(), user.getRole().name(), UserStatus.SAVED.name());
     }
 
+    @Transactional
     public UserEntity getById(UUID id){
-        try(
-                PreparedStatement statement = dataSource.getConnection().prepareStatement("SELECT * FROM usr where id=?")
-        ) {
-            statement.setObject(1, id);
-            ResultSet rs = statement.executeQuery();
-            if(rs.next()) {
-                UserEntity user = new UserEntity();
-                user.setId(UUID.fromString(rs.getString(1)));
-                user.setName(rs.getString(2));
-                user.setCreationTime(rs.getTimestamp(3));
-                user.setRole(Role.valueOf(rs.getString(4)));
-                return user;
-            } else return null;
-        } catch(SQLException e) {
-            System.err.println(e.getMessage());
-            return null;
-        }
+        return jdbcTemplate.query("SELECT * FROM usr where id=?", UserMapper.INSTANCE, id).stream().findAny().orElse(null);
     }
 
+    @Transactional
+    public UserStatus getStatusById(UUID id){
+        return jdbcTemplate.queryForObject("SELECT status FROM usr where id=?", UserStatus.class,id);
+    }
+
+    @Transactional
     public void update(UserEntity user){
-        try(
-                PreparedStatement statement = dataSource.getConnection().prepareStatement("UPDATE usr SET id=?,name=?,creation_date=?,role=? WHERE id=?")
-        ){
-            prepareUserForStatement(user, statement);
-            statement.setObject(5,user.getId());
-            statement.executeUpdate();
-        } catch (SQLException e){
-            System.err.println(e.getMessage());
-        }
+        jdbcTemplate.update("UPDATE usr SET id=?,name=?,creation_date=?,role=?::role_type WHERE id=?",user.getId(),user.getName(), user.getCreationTime(), user.getRole().name());
     }
 
-    public void deleteById(UUID id){
-        try(
-                PreparedStatement statement = dataSource.getConnection().prepareStatement("DELETE FROM usr WHERE id=?")
-        ){
-            if(id==null) throw new SQLException("Cannot delete: id is null");
-            statement.setObject(1, id);
-            statement.execute();
-        } catch(SQLException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-    private static void prepareUserForStatement(UserEntity user, PreparedStatement stat) throws SQLException {
-        stat.setObject(1, user.getId());
-        stat.setString(2, user.getName());
-        stat.setTimestamp(3, user.getCreationTime());
-        stat.setObject(4, user.getRole(), Types.OTHER);
+    @Transactional
+    public void deleteById(UUID id) {
+        jdbcTemplate.update("DELETE FROM usr WHERE id=?", id);
     }
 }

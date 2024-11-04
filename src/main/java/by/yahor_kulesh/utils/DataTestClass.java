@@ -17,7 +17,16 @@ import java.time.ZoneId;
 
 public class DataTestClass {
 
-    public static void testTicketService() {
+    public final TicketService ticketService;
+    public final UserService userService;
+
+    public DataTestClass(TicketService ticketService, UserService userService) {
+        this.ticketService = ticketService;
+        this.userService = userService;
+    }
+
+    public void testTicketService() {
+        readTicketsFromFile();
         ConcertTicket concert = testTicket();
         Client client = testUser(concert);
         ObjectArray ticketRepo=null;
@@ -31,7 +40,11 @@ public class DataTestClass {
         testUserDAO();
     }
 
-    private static ConcertTicket testTicket() {
+    private void readTicketsFromFile() {
+        System.out.println(ticketService.getTicketsFromFile());
+    }
+
+    private ConcertTicket testTicket() {
         Ticket ticket = new Ticket(InputValidator.inputTime("202501010101").atZone(ZoneId.systemDefault()), BigDecimal.valueOf(1234.123));
         ticket.print();
         ConcertTicket concert = new ConcertTicket(ticket,"Hall",123,false, Sector.A.toString());
@@ -45,12 +58,12 @@ public class DataTestClass {
         return concert;
     }
 
-    private static Client testUser(ConcertTicket concert) {
+    private Client testUser(ConcertTicket concert) {
         Client client = new Client();
-        UserService.insertOrUpdateUser(client);
-        client.getTicket(new BusTicket(567.89));
-        client.getTicket(new ConcertTicket("Concert",567,true, Sector.B.toString()));
-        client.getTicket(new Ticket(InputValidator.inputTime("202502030405").atZone(ZoneId.systemDefault()), BigDecimal.valueOf(1234.567)));
+        userService.insertOrUpdateUser(client);
+        ticketService.clientGetTicket(new BusTicket(567.89), client);
+        ticketService.clientGetTicket(new ConcertTicket("Concert",567,true, Sector.B.toString()), client);
+        ticketService.clientGetTicket(new Ticket(InputValidator.inputTime("202502030405").atZone(ZoneId.systemDefault()), BigDecimal.valueOf(1234.567)), client);
         client.print();
         Admin admin = new Admin();
         admin.print();
@@ -59,7 +72,7 @@ public class DataTestClass {
         return client;
     }
 
-    private static void testObjectSet(Client client) {
+    private void testObjectSet(Client client) {
         User u2 = new Client();
         u2.setId(client.getId());
         System.out.println("\n\n\nu2 user is equal to client: " + u2.equals(client));
@@ -77,7 +90,7 @@ public class DataTestClass {
 
     }
 
-    private static ObjectArray testObjectArray() {
+    private ObjectArray testObjectArray() {
         ObjectArray ticketRepo = new ObjectArray();
         for(int i = 0;i<13;i++){
             ticketRepo.add(new Ticket());
@@ -88,18 +101,18 @@ public class DataTestClass {
         return ticketRepo;
     }
 
-    private static void testUserDAO() {
+    private void testUserDAO() {
         Admin a = new Admin();
-        UserService.insertOrUpdateUser(a);
-        Admin adm = (Admin) UserService.getUserById(a.getId());
+        userService.insertOrUpdateUser(a);
+        Admin adm = (Admin) userService.getUserById(a.getId());
         System.out.println(a.equals(adm));
-        UserService.deleteUserById(a.getId());
+        userService.deleteUserById(a.getId());
     }
 
-    private static void testTicketDAO(ObjectArray ticketRepo, Client client) {
+    private void testTicketDAO(ObjectArray ticketRepo, Client client) {
         Ticket ticket = null;
         for(int i=0; i<ticketRepo.size(); i++){
-            TicketService.insertOrUpdateTicket(ticketRepo.getByIndex(i) instanceof ConcertTicket?(ConcertTicket)ticketRepo.getByIndex(i):
+            ticketService.insertOrUpdateTicket(ticketRepo.getByIndex(i) instanceof ConcertTicket?(ConcertTicket)ticketRepo.getByIndex(i):
                                      (ticketRepo.getByIndex(i) instanceof BusTicket?(BusTicket)ticketRepo.getByIndex(i):
                                               (Ticket)ticketRepo.getByIndex(i)));
             if(i==2){
@@ -108,10 +121,10 @@ public class DataTestClass {
                                           (Ticket)ticketRepo.getByIndex(i));
             }
         }
-        System.out.println(TicketService.getTicketById(ticket.getId()) + "\n-----------------------------------------------");
-        System.out.println(TicketService.getTicketByUserId(client.getId()) + "\n-----------------------------------------------");
-        TicketService.insertOrUpdateTicket(new BusTicket(ticket));
-        System.out.println(TicketService.getTicketById(ticket.getId()) + "\n----------------------------------------------");
-        TicketService.deleteTicketById(ticket.getId());
+        System.out.println(ticketService.getTicketById(ticket.getId()) + "\n-----------------------------------------------");
+        System.out.println(ticketService.getTicketByUserId(client.getId()) + "\n-----------------------------------------------");
+        ticketService.insertOrUpdateTicket(new BusTicket(ticket));
+        System.out.println(ticketService.getTicketById(ticket.getId()) + "\n----------------------------------------------");
+        ticketService.deleteTicketById(ticket.getId());
     }
 }

@@ -1,107 +1,79 @@
 package by.yahor_kulesh.dao;
 
 import by.yahor_kulesh.entity.TicketEntity;
-import by.yahor_kulesh.entity.UserEntity;
-import by.yahor_kulesh.entity.enums.TicketType;
-import by.yahor_kulesh.utils.ObjectArray;
+import by.yahor_kulesh.entity.enums.UserStatus;
+import by.yahor_kulesh.mappers.TicketMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-
-import javax.sql.DataSource;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.util.List;
 import java.util.UUID;
 
 @Repository
 public class TicketDAO{
 
-    private final DataSource dataSource;
+    private final JdbcTemplate jdbcTemplate;
 
-    private ResultSet rs = null;
-
-    public TicketDAO(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public TicketDAO(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void insert(TicketEntity ticket){
-        try(
-                PreparedStatement statement = dataSource.getConnection().prepareStatement("INSERT INTO ticket(id,user_id,ticket_type,creation_date) VALUES (?,?,?,?)")
-        ){
-            prepareTicketForStatement(ticket, statement);
-            statement.execute();
-        }catch(SQLException e){
-            System.err.println(e.getMessage());
-        }
+    @Transactional
+    public void insert(TicketEntity ticket) {
+        jdbcTemplate.update("INSERT INTO ticket(id,user_id,ticket_type,creation_date) VALUES (?,?,?::ticket_type,?)",
+                ticket.getId(),
+                ticket.getUser()==null?null:ticket.getUser().getId(),
+                ticket.getType().name(),
+                ticket.getCreationTime()
+        );
     }
-
+    @Transactional
     public TicketEntity getById(UUID id) {
-        try(
-                PreparedStatement statement = dataSource.getConnection().prepareStatement("SELECT * FROM ticket where id=?")
-        ) {
-            statement.setObject(1, id);
-            rs = statement.executeQuery();
-            if(rs.next()){
-                return getTicketFromDB();
-            }else return null;
-        } catch(SQLException e) {
-            System.err.println(e.getMessage());
-            return null;
-        }
+        return jdbcTemplate.query("SELECT * FROM ticket where id=?", TicketMapper.INSTANCE, id).stream().findAny().orElse(null);
     }
 
-    public ObjectArray getByUserId(UUID id) {
-        ObjectArray tickets = new ObjectArray();
-        try(
-                PreparedStatement statement = dataSource.getConnection().prepareStatement("SELECT * FROM ticket where user_id=?")
-        ) {
-            statement.setObject(1, id);
-            rs = statement.executeQuery();
-            while(rs.next()) {
-                tickets.add(getTicketFromDB());
-            }
-            return tickets;
-        } catch(SQLException e) {
-            System.err.println(e.getMessage());
-            return null;
-        }
+    @Transactional
+    public List<TicketEntity> getByUserId(UUID id) {
+        return jdbcTemplate.query("SELECT * FROM ticket where user_id=?", TicketMapper.INSTANCE, id);
     }
 
+    @Transactional
     public void update(TicketEntity ticket){
-        try(
-                PreparedStatement statement = dataSource.getConnection().prepareStatement("UPDATE ticket SET id=?,user_id=?,ticket_type=?,creation_date=? WHERE id=?")
-        ){
-            prepareTicketForStatement(ticket, statement);
-            statement.setObject(5,ticket.getId());
-            statement.executeUpdate();
-        } catch (SQLException e){
-            System.err.println(e.getMessage());
-        }
+        jdbcTemplate.update("UPDATE ticket SET id=?,user_id=?,ticket_type=?::ticket_type,creation_date=? WHERE id=?",
+                ticket.getId(),
+                ticket.getUser()==null?null:ticket.getUser().getId(),
+                ticket.getType().name(),
+                ticket.getCreationTime(),
+                ticket.getId()
+        );
     }
 
+    @Transactional
     public void deleteById(UUID id){
-        try(
-                PreparedStatement statement = dataSource.getConnection().prepareStatement("DELETE FROM ticket WHERE id=?")
-        ){
-            statement.setObject(1, id);
-            statement.execute();
-        } catch(SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        jdbcTemplate.update("DELETE FROM ticket WHERE id=?", id);
     }
-    private void prepareTicketForStatement(TicketEntity ticket, PreparedStatement stat) throws SQLException {
-        stat.setObject(1,ticket.getId());
-        stat.setObject(2,ticket.getUser()==null?null:ticket.getUser().getId());
-        stat.setObject(3,ticket.getType(), Types.OTHER);
-        stat.setTimestamp(4, ticket.getCreationTime());
+
+    @Transactional
+    public void insertTicketAndUpdateUser(TicketEntity ticket){
+        jdbcTemplate.update("UPDATE usr SET status=?::status_type WHERE id=?", UserStatus.ACTIVATED.name(),ticket.getUser().getId());
+        jdbcTemplate.update("INSERT INTO ticket(id,user_id,ticket_type,creation_date) VALUES (?,?,?::ticket_type,?)",
+                ticket.getId(),
+                ticket.getUser()==null?null:ticket.getUser().getId(),
+                ticket.getType().name(),
+                ticket.getCreationTime()
+        );
     }
-    private TicketEntity getTicketFromDB() throws SQLException {
-        TicketEntity ticket = new TicketEntity();
-        ticket.setId(UUID.fromString(rs.getString(1)));
-        ticket.setUser(new UserEntity(rs.getString(2) == null?null:UUID.fromString(rs.getString(2))));
-        ticket.setType(TicketType.valueOf(rs.getString(3)));
-        ticket.setCreationTime(rs.getTimestamp(4));
-        return ticket;
+
+    @Transactional
+    public void updateTicketAndUpdateUser(TicketEntity ticket){
+        jdbcTemplate.update("UPDATE usr SET status=?::status_type WHERE id=?", UserStatus.ACTIVATED.name(),ticket.getUser().getId());
+        jdbcTemplate.update("UPDATE ticket SET id=?,user_id=?,ticket_type=?::ticket_type,creation_date=? WHERE id=?",
+                ticket.getId(),
+                ticket.getUser()==null?null:ticket.getUser().getId(),
+                ticket.getType().name(),
+                ticket.getCreationTime(),
+                ticket.getId()
+        );
     }
 }

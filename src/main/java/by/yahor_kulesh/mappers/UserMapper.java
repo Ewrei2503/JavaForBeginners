@@ -12,12 +12,16 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.ObjectFactory;
 import org.mapstruct.factory.Mappers;
+import org.springframework.jdbc.core.RowMapper;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Set;
+import java.util.UUID;
 
 
 @Mapper
-public interface UserMapper extends CommonMapper{
+public interface UserMapper extends CommonMapper, RowMapper<UserEntity> {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
@@ -54,6 +58,14 @@ public interface UserMapper extends CommonMapper{
 
 
 
+    default UserEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+        UserEntity user = new UserEntity();
+        user.setId(UUID.fromString(rs.getString(1)));
+        user.setName(rs.getString(2));
+        user.setCreationTime(rs.getTimestamp(3));
+        user.setRole(Role.valueOf(rs.getString(4)));
+        return user;
+    }
 
     default Role mapRole(User user) {
         if(user instanceof Client) {
