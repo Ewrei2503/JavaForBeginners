@@ -22,9 +22,9 @@ public interface UserRepository extends CrudRepository<UserEntity, UUID> {
     void removeUserById(UUID id);
 
     /**
-        Dispatcher servlet required to declare here
+        Required to declare here
         @Transactional manually in case of using
-        @Query
+        @Query - else InvalidDataAccessApiUsageException handles
      */
     @Transactional
     @Modifying
