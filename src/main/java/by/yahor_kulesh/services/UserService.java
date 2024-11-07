@@ -1,45 +1,47 @@
 package by.yahor_kulesh.services;
 
-import by.yahor_kulesh.dao.UserDAO;
 import by.yahor_kulesh.mappers.UserMapper;
-import by.yahor_kulesh.model.Data;
 import by.yahor_kulesh.model.users.User;
+import by.yahor_kulesh.repositories.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 @Service
-public class UserService extends Data {
+public class UserService {
 
-    private final UserDAO userDAO;
+    private final UserRepository userRepository;
 
-    public UserService(UserDAO userDAO) {
-        this.userDAO = userDAO;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
+    @Transactional
     public void insertOrUpdateUser(User user) {
         if(user==null || user.getId()==null) {
             System.err.println("User or user's ID cannot be null");
             return;
-        }if(userDAO.getById(user.getId())==null) {
-            userDAO.insert(UserMapper.INSTANCE.toEntity(user));
-        }else userDAO.update(UserMapper.INSTANCE.toEntity(user));
+        }
+        userRepository.insertOrUpdateUser(UserMapper.INSTANCE.toEntity(user));
     }
 
+    @Transactional
     public void deleteUserById(UUID id) {
         if(id==null) {
             System.err.println("User's ID cannot be null");
-        }else if(userDAO.getById(id)==null) {
+        }else if(userRepository.getUserById(id)==null) {
             System.err.println("User not found");
         } else {
-            userDAO.deleteById(id);
+            userRepository.removeUserById(id);
         }
     }
 
+    @Transactional(readOnly = true)
     public User getUserById(UUID id){
         if(id==null) {
             System.err.println("User's ID cannot be null");
             return null;
-        } else return UserMapper.INSTANCE.toModel(userDAO.getById(id));
+        } else return UserMapper.INSTANCE.toModel(userRepository.getUserById(id));
     }
 }

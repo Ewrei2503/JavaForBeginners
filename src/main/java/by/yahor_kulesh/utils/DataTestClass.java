@@ -61,9 +61,9 @@ public class DataTestClass {
     private Client testUser(ConcertTicket concert) {
         Client client = new Client();
         userService.insertOrUpdateUser(client);
-        ticketService.clientGetTicket(new BusTicket(567.89), client);
-        ticketService.clientGetTicket(new ConcertTicket("Concert",567,true, Sector.B.toString()), client);
-        ticketService.clientGetTicket(new Ticket(InputValidator.inputTime("202502030405").atZone(ZoneId.systemDefault()), BigDecimal.valueOf(1234.567)), client);
+        ticketService.insertOrUpdateTicketAndUpdateClient(new BusTicket(567.89), client);
+        ticketService.insertOrUpdateTicketAndUpdateClient(new ConcertTicket("Concert",567,true, Sector.B.toString()), client);
+        ticketService.insertOrUpdateTicketAndUpdateClient(new Ticket(InputValidator.inputTime("202502030405").atZone(ZoneId.systemDefault()), BigDecimal.valueOf(1234.567)), client);
         client.print();
         Admin admin = new Admin();
         admin.print();
