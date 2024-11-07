@@ -6,11 +6,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.sql.DataSource;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -20,12 +20,8 @@ import java.io.IOException;
 @PropertySource("classpath:application.properties")
 @EnableTransactionManagement
 @EnableAspectJAutoProxy
-public class ApplicationContext {
-
-    @Bean
-    public PlatformTransactionManager transactionManager(DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
-    }
+@EnableJpaRepositories("by.yahor_kulesh")
+public class ApplicationContext implements WebMvcConfigurer {
 
     @Bean
     public File ticketDataFile() {

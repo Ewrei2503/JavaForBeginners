@@ -1,20 +1,14 @@
 package by.yahor_kulesh;
 
-import by.yahor_kulesh.config.ApplicationContext;
-import by.yahor_kulesh.model.Data;
 
-import by.yahor_kulesh.services.TicketService;
-import by.yahor_kulesh.services.UserService;
-import by.yahor_kulesh.utils.DataTestClass;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 
-public class App extends Data {
-
-    public static final AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ApplicationContext.class);
-
+@SpringBootApplication
+public class App extends SpringBootServletInitializer {
     public static void main(String[] args) {
-        DataTestClass testClass = new DataTestClass(context.getBean(TicketService.class),context.getBean(UserService.class));
-        testClass.testTicketService();
+        SpringApplication.run(App.class, args);
     }
 }
