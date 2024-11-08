@@ -76,9 +76,9 @@ public class Ticket extends Data {
                        ";\nUser's ID: " + this.getUserId() +
                        ";\nTicket Class: " + this.getTicketClass() +
                        ";\nTicket Type: " + this.getTicketType() +
-                       ";\nWas bought: " + (this.getCreationTime() == null? null: this.getCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
-                       ";\nDate of event: " +(this.getStartDate()!= null? this.getStartDate():(this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME))) +
-                       ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
+                       ";\nWas bought: " + ((Objects.isNull(this.getCreationTime()))? null: this.getCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
+                       ";\nDate of event: " +(!(Objects.isNull(this.getStartDate()))? this.getStartDate():(Objects.isNull((this.getDate()))? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME))) +
+                       ";\nPrice: " + ((Objects.isNull(this.getPrice()))?0.0:this.getPrice()) +
                        "$.\n\n\n";
     }
 

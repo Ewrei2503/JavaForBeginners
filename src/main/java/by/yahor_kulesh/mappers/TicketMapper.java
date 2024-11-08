@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,7 +31,7 @@ public interface TicketMapper extends CommonMapper, RowMapper<TicketEntity> {
 
 
     default List<Ticket> toModel(List<TicketEntity> ticketEntityList){
-        if(ticketEntityList == null || ticketEntityList.isEmpty()) return Collections.emptyList();
+        if((Objects.isNull(ticketEntityList)) || ticketEntityList.isEmpty()) return Collections.emptyList();
         List<Ticket> ticketList = new ArrayList<>();
         for(TicketEntity ticketEntity : ticketEntityList){
             ticketList.add(toModel(ticketEntity));
@@ -41,7 +42,7 @@ public interface TicketMapper extends CommonMapper, RowMapper<TicketEntity> {
 
     @ObjectFactory
     default Ticket toModel(TicketEntity ticketEntity){
-        if(ticketEntity == null) return null;
+        if(Objects.isNull(ticketEntity)) return null;
         if(TicketType.BUS == ticketEntity.getType()) {
             return toBusTicket(ticketEntity);
         } else if(ticketEntity.getType()==TicketType.CONCERT) {
@@ -62,7 +63,7 @@ public interface TicketMapper extends CommonMapper, RowMapper<TicketEntity> {
     BusTicket toBusTicket(TicketEntity ticketEntity);
 
     default Ticket toTicket(TicketEntity ticketEntity){
-        if(ticketEntity == null) return null;
+        if(Objects.isNull(ticketEntity)) return null;
         Ticket ticket = new Ticket();
 
         ticket.setCreationTime( timestampToZonedDateTime( ticketEntity.getCreationTime() ) );
@@ -95,7 +96,7 @@ public interface TicketMapper extends CommonMapper, RowMapper<TicketEntity> {
 
     @Named(value = "UUIDToUserEntity")
     default UserEntity UUIDToUserEntity(UUID uuid) {
-        if(uuid == null) {
+        if(Objects.isNull(uuid)) {
             return null;
         } else {
             UserEntity userEntity = new UserEntity();
@@ -106,7 +107,7 @@ public interface TicketMapper extends CommonMapper, RowMapper<TicketEntity> {
 
     @Named(value = "userEntityToUUID")
     default UUID userEntityToUUID(UserEntity userEntity) {
-        if(userEntity == null) {
+        if(Objects.isNull(userEntity)) {
             return null;
         } else {
             return userEntity.getId();
@@ -118,7 +119,7 @@ public interface TicketMapper extends CommonMapper, RowMapper<TicketEntity> {
     default TicketEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
         TicketEntity ticket = new TicketEntity();
         ticket.setId(UUID.fromString(rs.getString(1)));
-        ticket.setUser(new UserEntity(rs.getString(2) == null?null:UUID.fromString(rs.getString(2))));
+        ticket.setUser(new UserEntity((Objects.isNull(rs.getString(2)))?null:UUID.fromString(rs.getString(2))));
         ticket.setType(TicketType.valueOf(rs.getString(3)));
         ticket.setCreationTime(rs.getTimestamp(4));
         return ticket;

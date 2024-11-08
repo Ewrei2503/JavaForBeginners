@@ -9,6 +9,7 @@ import by.yahor_kulesh.repositories.UserRepository;
 import by.yahor_kulesh.utils.DataTestClass;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ import java.util.UUID;
 
 
 @Service
+@RequiredArgsConstructor
 public class TicketService{
 
     private final File ticketDataFile;
@@ -32,16 +34,9 @@ public class TicketService{
     private final UserRepository userRepository;
     private final UserService userService;
 
-    public TicketService(File ticketDataFile, TicketRepository ticketRepository, UserRepository userRepository, UserService userService) {
-        this.ticketDataFile = ticketDataFile;
-        this.ticketRepository = ticketRepository;
-        this.userRepository = userRepository;
-        this.userService = userService;
-    }
-
     @Transactional
     public void insertOrUpdateTicket(Ticket ticket){
-        if(Objects.isNull(ticket) || ticket.getId()==null) {
+        if(Objects.isNull(ticket) || Objects.isNull(ticket.getId())) {
             System.err.println("Ticket or ticket's ID cannot be null");
             return;
         }
@@ -67,7 +62,7 @@ public class TicketService{
 
     @Transactional(readOnly = true)
     public List<Ticket> getTicketByUserId(UUID userId) {
-        if(userId==null){
+        if(Objects.isNull(userId)){
             System.err.println("User's ID cannot be null");
             return Collections.emptyList();
         }return TicketMapper.INSTANCE.toModel(ticketRepository.getTicketByUserId(userId));
@@ -115,7 +110,7 @@ public class TicketService{
             Ticket ticket = new Ticket();
             ticketRepository.save(TicketMapper.INSTANCE.toEntity(ticket));
             return ticketRepository.getTicketById(ticket.getId());
-        }else if(ticketRepository.getTicketById(id)==null) {
+        }else if(Objects.isNull(ticketRepository.getTicketById(id))) {
             ticketRepository.save(TicketMapper.INSTANCE.toEntity(new Ticket(id)));
         }
         return ticketRepository.getTicketById(id);

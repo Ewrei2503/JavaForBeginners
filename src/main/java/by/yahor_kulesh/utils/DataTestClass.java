@@ -10,20 +10,17 @@ import by.yahor_kulesh.model.users.User;
 import by.yahor_kulesh.services.TicketService;
 import by.yahor_kulesh.services.UserService;
 import by.yahor_kulesh.validators.InputValidator;
+import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.ZoneId;
 
-
+@RequiredArgsConstructor
 public class DataTestClass {
 
     public final TicketService ticketService;
     public final UserService userService;
 
-    public DataTestClass(TicketService ticketService, UserService userService) {
-        this.ticketService = ticketService;
-        this.userService = userService;
-    }
 
     public void testTicketService() {
         readTicketsFromFile();

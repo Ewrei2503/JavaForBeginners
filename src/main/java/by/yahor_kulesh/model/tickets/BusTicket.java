@@ -53,10 +53,10 @@ public class BusTicket extends Ticket{
         return "Bus ticket Info:\n" +
                        "ID: " + this.getId() +
                        ";\nUser's ID: " + this.getUserId() +
-                       ";\nDate of depart: " + (this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
+                       ";\nDate of depart: " + (Objects.isNull(this.getDate())? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
                        ";\nBackpack weight allowed: " + this.getBackpackWeight() +
-                       ";\nWas bought: " + (this.getCreationTime() == null? null: this.getCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
-                       ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
+                       ";\nWas bought: " + (Objects.isNull(this.getCreationTime())? null: this.getCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
+                       ";\nPrice: " + (Objects.isNull(this.getPrice())?0.0:this.getPrice()) +
                        "$.\n\n\n";
     }
 }
