@@ -10,10 +10,6 @@ import java.util.UUID;
 @Repository
 public interface TicketRepository extends CrudRepository<TicketEntity, UUID> {
 
-    default void insertOrUpdateTicket(TicketEntity ticket){
-        this.save(ticket);
-    }
-
     TicketEntity getTicketById(UUID id);
 
     List<TicketEntity> getTicketByUserId(UUID userId);

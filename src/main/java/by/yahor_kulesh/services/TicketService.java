@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -40,16 +41,16 @@ public class TicketService{
 
     @Transactional
     public void insertOrUpdateTicket(Ticket ticket){
-        if(ticket==null || ticket.getId()==null) {
+        if(Objects.isNull(ticket) || ticket.getId()==null) {
             System.err.println("Ticket or ticket's ID cannot be null");
             return;
         }
-        ticketRepository.insertOrUpdateTicket(TicketMapper.INSTANCE.toEntity(ticket));
+        ticketRepository.save(TicketMapper.INSTANCE.toEntity(ticket));
     }
 
     @Transactional
     public void deleteTicketById(UUID id) {
-        if(TicketMapper.INSTANCE.toModel(ticketRepository.getTicketById(id))==null) {
+        if(Objects.isNull(TicketMapper.INSTANCE.toModel(ticketRepository.getTicketById(id)))) {
             System.err.println("Ticket not found");
         } else {
             ticketRepository.deleteById(id);
@@ -58,7 +59,7 @@ public class TicketService{
 
     @Transactional(readOnly = true)
     public Ticket getTicketById(UUID id){
-        if(id==null){
+        if(Objects.isNull(id)){
             System.err.println("Ticket's ID cannot be null");
             return null;
         } else return TicketMapper.INSTANCE.toModel(ticketRepository.getTicketById(id));
@@ -75,7 +76,7 @@ public class TicketService{
     @Transactional
     public void insertOrUpdateTicketAndUpdateClient(Ticket ticket, Client client) {
             ticket.setUserId(client.getId());
-            ticketRepository.insertOrUpdateTicket(TicketMapper.INSTANCE.toEntity(ticket));
+            ticketRepository.save(TicketMapper.INSTANCE.toEntity(ticket));
             userRepository.updateUserStatusById(client.getId());
             System.out.println("Client got ticket:" + ticket.getId() + "\n");
             client.getTickets().add(ticket);
@@ -110,12 +111,12 @@ public class TicketService{
 
     @Transactional
     public TicketEntity getOrCreateTicket(UUID id) {
-        if(id==null){
+        if(Objects.isNull(id)){
             Ticket ticket = new Ticket();
-            ticketRepository.insertOrUpdateTicket(TicketMapper.INSTANCE.toEntity(ticket));
+            ticketRepository.save(TicketMapper.INSTANCE.toEntity(ticket));
             return ticketRepository.getTicketById(ticket.getId());
         }else if(ticketRepository.getTicketById(id)==null) {
-            ticketRepository.insertOrUpdateTicket(TicketMapper.INSTANCE.toEntity(new Ticket(id)));
+            ticketRepository.save(TicketMapper.INSTANCE.toEntity(new Ticket(id)));
         }
         return ticketRepository.getTicketById(id);
     }

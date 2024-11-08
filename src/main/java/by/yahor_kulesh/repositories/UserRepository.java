@@ -13,10 +13,6 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends CrudRepository<UserEntity, UUID> {
 
-    default void insertOrUpdateUser(UserEntity user){
-        this.save(user);
-    }
-
     UserEntity getUserById(UUID id);
 
     void removeUserById(UUID id);

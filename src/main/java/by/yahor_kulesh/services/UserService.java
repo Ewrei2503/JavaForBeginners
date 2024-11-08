@@ -23,7 +23,7 @@ public class UserService {
             System.err.println("User or user's ID cannot be null");
             return;
         }
-        userRepository.insertOrUpdateUser(UserMapper.INSTANCE.toEntity(user));
+        userRepository.save(UserMapper.INSTANCE.toEntity(user));
     }
 
     @Transactional
