@@ -1,30 +1,23 @@
 package by.yahor_kulesh.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Objects;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
+@Setter
 public abstract class Data implements Printable{
     private final ZonedDateTime objectCreationTime = ZonedDateTime.now();
 
     private ZonedDateTime creationTime = null;
 
+    @Getter
     private UUID id = UUID.randomUUID();
 
-    public void setCreationTime(ZonedDateTime creationTime) {
-        this.creationTime = creationTime;
-    }
-
     public ZonedDateTime getCreationTime() {
-        return creationTime==null? objectCreationTime: creationTime;
-    }
-
-    public UUID getId(){
-        return id;
-    }
-
-    public void setId(UUID id){
-        this.id = id;
+        return (Objects.isNull(creationTime))? objectCreationTime: creationTime;
     }
 
     @Override

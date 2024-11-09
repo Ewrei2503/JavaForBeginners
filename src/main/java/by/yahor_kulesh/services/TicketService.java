@@ -1,13 +1,17 @@
 package by.yahor_kulesh.services;
 
-import by.yahor_kulesh.dao.TicketDAO;
+import by.yahor_kulesh.entity.TicketEntity;
 import by.yahor_kulesh.mappers.TicketMapper;
-import by.yahor_kulesh.model.Data;
 import by.yahor_kulesh.model.tickets.Ticket;
 import by.yahor_kulesh.model.users.Client;
+import by.yahor_kulesh.repositories.TicketRepository;
+import by.yahor_kulesh.repositories.UserRepository;
+import by.yahor_kulesh.utils.DataTestClass;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,59 +20,62 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 
+
 @Service
-public class TicketService extends Data{
+@RequiredArgsConstructor
+public class TicketService{
 
-    private final TicketDAO ticketDAO;
     private final File ticketDataFile;
+    private final TicketRepository ticketRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public TicketService(TicketDAO ticketDAO, File ticketDataFile) {
-        this.ticketDAO = ticketDAO;
-        this.ticketDataFile = ticketDataFile;
-    }
-
-
+    @Transactional
     public void insertOrUpdateTicket(Ticket ticket){
-        if(ticket==null || ticket.getId()==null) {
+        if(Objects.isNull(ticket) || Objects.isNull(ticket.getId())) {
             System.err.println("Ticket or ticket's ID cannot be null");
             return;
         }
-        if(getTicketById(ticket.getId())==null) {
-            ticketDAO.insert(TicketMapper.INSTANCE.toEntity(ticket));
-        } else ticketDAO.update(TicketMapper.INSTANCE.toEntity(ticket));
+        ticketRepository.save(TicketMapper.INSTANCE.toEntity(ticket));
     }
+
+    @Transactional
     public void deleteTicketById(UUID id) {
-        if(getTicketById(id)==null) {
+        if(Objects.isNull(TicketMapper.INSTANCE.toModel(ticketRepository.getTicketById(id)))) {
             System.err.println("Ticket not found");
         } else {
-            ticketDAO.deleteById(id);
+            ticketRepository.deleteById(id);
         }
     }
+
+    @Transactional(readOnly = true)
     public Ticket getTicketById(UUID id){
-        if(id==null){
+        if(Objects.isNull(id)){
             System.err.println("Ticket's ID cannot be null");
             return null;
-        } else return TicketMapper.INSTANCE.toModel(ticketDAO.getById(id));
+        } else return TicketMapper.INSTANCE.toModel(ticketRepository.getTicketById(id));
     }
+
+    @Transactional(readOnly = true)
     public List<Ticket> getTicketByUserId(UUID userId) {
-        if(userId==null){
+        if(Objects.isNull(userId)){
             System.err.println("User's ID cannot be null");
             return Collections.emptyList();
-        }return TicketMapper.INSTANCE.toModel(ticketDAO.getByUserId(userId));
+        }return TicketMapper.INSTANCE.toModel(ticketRepository.getTicketByUserId(userId));
     }
 
-    public void clientGetTicket(Ticket ticket, Client client) {
-        ticket.setUserId(client.getId());
-        if(ticketDAO.getById(ticket.getId())==null) {
-            ticketDAO.insertTicketAndUpdateUser(TicketMapper.INSTANCE.toEntity(ticket));
-        } else ticketDAO.updateTicketAndUpdateUser(TicketMapper.INSTANCE.toEntity(ticket));
-        System.out.println("Client got ticket:" + ticket.getId() + "\n");
-        client.getTickets().add(ticket);
+    @Transactional
+    public void insertOrUpdateTicketAndUpdateClient(Ticket ticket, Client client) {
+            ticket.setUserId(client.getId());
+            ticketRepository.save(TicketMapper.INSTANCE.toEntity(ticket));
+            userRepository.updateUserStatusById(client.getId());
+            System.out.println("Client got ticket:" + ticket.getId() + "\n");
+            client.getTickets().add(ticket);
     }
-
 
     public List<Ticket> getTicketsFromFile(){
         List<Ticket> tickets = new ArrayList<>();
@@ -95,5 +102,22 @@ public class TicketService extends Data{
             return getTicketFromString(input);
         }
         return ticket;
+    }
+
+    @Transactional
+    public TicketEntity getOrCreateTicket(UUID id) {
+        if(Objects.isNull(id)){
+            Ticket ticket = new Ticket();
+            ticketRepository.save(TicketMapper.INSTANCE.toEntity(ticket));
+            return ticketRepository.getTicketById(ticket.getId());
+        }else if(Objects.isNull(ticketRepository.getTicketById(id))) {
+            ticketRepository.save(TicketMapper.INSTANCE.toEntity(new Ticket(id)));
+        }
+        return ticketRepository.getTicketById(id);
+    }
+
+    public void testApp() {
+        DataTestClass testClass = new DataTestClass(this,userService);
+        testClass.testTicketService();
     }
 }

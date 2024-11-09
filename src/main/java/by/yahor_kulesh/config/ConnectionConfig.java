@@ -2,14 +2,15 @@ package by.yahor_kulesh.config;
 
 import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
 
-@Component
+@Configuration
+@ConditionalOnProperty(prefix = "connectionConfig", name = {"url", "username", "password"})
 public class ConnectionConfig {
     @Value("${connectionConfig.url}")
     private String url;
@@ -26,9 +27,5 @@ public class ConnectionConfig {
         dataSource.setPassword(password);
         return dataSource;
     }
-
-    @Bean
-    public JdbcTemplate jdbcTemplate(DataSource dataSource){
-        return new JdbcTemplate(dataSource);
-    }
 }
+

@@ -1,5 +1,6 @@
 package by.yahor_kulesh.utils;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class ObjectSetAsArray extends ObjectCollection {
@@ -30,7 +31,7 @@ public class ObjectSetAsArray extends ObjectCollection {
     public boolean contains(Object o) {
         if(firstEmptyElement > 0) {
             for(Object object : objects) {
-                if(object!=null && object.equals(o)) {
+                if(!Objects.isNull(object) && object.equals(o)) {
                     return true;
                 }
             }

@@ -88,11 +88,11 @@ public class ConcertTicket extends Ticket {
                        ";\nUser's ID: " + this.getUserId() +
                        ";\nConcert Hall: " + this.getConcertHall() +
                        ";\nEvent Code: " + this.getEventCode() +
-                       ";\nDate of event: " + (this.getDate() == null? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
+                       ";\nDate of event: " + ((Objects.isNull(this.getDate()))? null: this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
                        ";\nPromo ticket: " + this.isPromo() +
                        ";\nSector: " + this.getSector() +
-                       ";\nWas bought: " + (this.getCreationTime() == null? null: this.getCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
-                       ";\nPrice: " + (this.getPrice()==null?0.0:this.getPrice()) +
+                       ";\nWas bought: " + ((Objects.isNull(this.getCreationTime()))? null: this.getCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME)) +
+                       ";\nPrice: " + (Objects.isNull(this.getPrice())?0.0:this.getPrice()) +
                        "$.\n\n\n";
     }
 

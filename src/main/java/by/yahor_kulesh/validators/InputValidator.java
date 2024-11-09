@@ -64,7 +64,7 @@ public class InputValidator extends Data implements Printable {
     public static boolean inputBoolean(){
         int input = inputInt();
         try{
-            if(input > 1 | input < 0){
+            if(input > 1 || input < 0){
                 throw new InputMismatchException("Must be 1(True) or 0(False)!");
             }
         } catch(InputMismatchException e){
@@ -76,21 +76,7 @@ public class InputValidator extends Data implements Printable {
     }
 
     public static LocalDateTime inputTime(){
-        String input = inputString();
-        LocalDateTime localDateTime;
-        try{
-            localDateTime = LocalDateTime.parse(input, DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
-            if(localDateTime.isBefore(LocalDateTime.now())){
-                throw new InputMismatchException("You trying to buy ticket in the past!");
-            }
-        } catch(DateTimeParseException e){
-            System.err.println("Not valid! Write time of event in YYYYMMDDHHmm format!");
-            localDateTime = inputTime();
-        } catch(InputMismatchException e){
-            System.err.println(e.getMessage());
-            localDateTime = inputTime();
-        }
-        return localDateTime;
+        return inputTime(inputString());
     }
 
     public static LocalDateTime inputTime(String input){

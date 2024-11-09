@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -40,7 +41,7 @@ public interface UserMapper extends CommonMapper, RowMapper<UserEntity> {
 
     @ObjectFactory
     default User toModel(UserEntity userEntity){
-        if(userEntity == null){
+        if(Objects.isNull(userEntity)){
             return null;
         } else if(userEntity.getRole().equals(Role.CLIENT)) {
             return toClient(userEntity);

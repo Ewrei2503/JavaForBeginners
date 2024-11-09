@@ -10,20 +10,17 @@ import by.yahor_kulesh.model.users.User;
 import by.yahor_kulesh.services.TicketService;
 import by.yahor_kulesh.services.UserService;
 import by.yahor_kulesh.validators.InputValidator;
+import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.ZoneId;
 
-
+@RequiredArgsConstructor
 public class DataTestClass {
 
     public final TicketService ticketService;
     public final UserService userService;
 
-    public DataTestClass(TicketService ticketService, UserService userService) {
-        this.ticketService = ticketService;
-        this.userService = userService;
-    }
 
     public void testTicketService() {
         readTicketsFromFile();
@@ -61,9 +58,9 @@ public class DataTestClass {
     private Client testUser(ConcertTicket concert) {
         Client client = new Client();
         userService.insertOrUpdateUser(client);
-        ticketService.clientGetTicket(new BusTicket(567.89), client);
-        ticketService.clientGetTicket(new ConcertTicket("Concert",567,true, Sector.B.toString()), client);
-        ticketService.clientGetTicket(new Ticket(InputValidator.inputTime("202502030405").atZone(ZoneId.systemDefault()), BigDecimal.valueOf(1234.567)), client);
+        ticketService.insertOrUpdateTicketAndUpdateClient(new BusTicket(567.89), client);
+        ticketService.insertOrUpdateTicketAndUpdateClient(new ConcertTicket("Concert",567,true, Sector.B.toString()), client);
+        ticketService.insertOrUpdateTicketAndUpdateClient(new Ticket(InputValidator.inputTime("202502030405").atZone(ZoneId.systemDefault()), BigDecimal.valueOf(1234.567)), client);
         client.print();
         Admin admin = new Admin();
         admin.print();

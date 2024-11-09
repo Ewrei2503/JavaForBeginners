@@ -31,15 +31,12 @@ public class DAOAspect {
     @Value("${ticket.get}")
     public boolean getTicket;
 
-    @Around("execution(* by.yahor_kulesh.dao.UserDAO.* (..)) || execution(* by.yahor_kulesh.dao.TicketDAO.* (..))")
-    public Object aroundDAOMethods(ProceedingJoinPoint joinPoint){
+    @Around("(execution(* by.yahor_kulesh.services.UserService.*(..)) || execution(* by.yahor_kulesh.services.TicketService.* (..))) && @annotation(org.springframework.transaction.annotation.Transactional) ")
+    public Object checkMethodProhibition(ProceedingJoinPoint joinPoint){
         try {
             String method = joinPoint.getSignature().getName();
             if(
-                    (method.contains("insert") && !insertUser) || (method.contains("delete") && !deleteUser) ||
-                    (method.contains("update") && !updateUser) || (method.contains("get") && !getUser) ||
-                    (method.contains("insert") && !insertTicket) || (method.contains("delete") && !deleteTicket) ||
-                    (method.contains("update") && !updateTicket) || (method.contains("get") && !getTicket)
+                    isMethodProhibited(method)
             ){
                 throw new SQLException("This type of operation( " + method + ") is not allowed!");
             }
@@ -48,5 +45,12 @@ public class DAOAspect {
             System.err.println(e.getMessage());
         }
         return null;
+    }
+
+    private boolean isMethodProhibited(String method) {
+        return (method.contains("insert") && !insertUser) || (method.contains("delete") && !deleteUser) ||
+               (method.contains("update") && !updateUser) || (method.contains("get") && !getUser) ||
+               (method.contains("insert") && !insertTicket) || (method.contains("delete") && !deleteTicket) ||
+               (method.contains("update") && !updateTicket) || (method.contains("get") && !getTicket);
     }
 }

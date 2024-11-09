@@ -1,20 +1,17 @@
 package by.yahor_kulesh;
 
-import by.yahor_kulesh.config.ApplicationContext;
-import by.yahor_kulesh.model.Data;
 
-import by.yahor_kulesh.services.TicketService;
-import by.yahor_kulesh.services.UserService;
-import by.yahor_kulesh.utils.DataTestClass;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
-public class App extends Data {
-
-    public static final AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ApplicationContext.class);
-
+@SpringBootApplication
+@EnableTransactionManagement
+@EnableAspectJAutoProxy
+public class App {
     public static void main(String[] args) {
-        DataTestClass testClass = new DataTestClass(context.getBean(TicketService.class),context.getBean(UserService.class));
-        testClass.testTicketService();
+        SpringApplication.run(App.class, args);
     }
 }
