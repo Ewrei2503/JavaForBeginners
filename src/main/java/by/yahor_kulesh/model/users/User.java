@@ -6,25 +6,24 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public abstract class User extends Data{
-    private String name = "default_user";
+public abstract class User extends Data {
+  private String name = "default_user";
 
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
 
-    public void printRole(){
-        System.out.println(getRole());
-    }
+  public void printRole() {
+    System.out.println(getRole());
+  }
 
-    public String getRole(){
-        return this.getClass().getSimpleName();
-    }
-
+  public String getRole() {
+    return this.getClass().getSimpleName();
+  }
 }

@@ -10,30 +10,26 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.Data;
-
 import java.sql.Timestamp;
 import java.util.UUID;
-
+import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "ticket")
 public class TicketEntity {
-    @Id
-    @Column(name = "id")
-    private UUID id;
+  @Id
+  @Column(name = "id")
+  private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  private UserEntity user;
 
-    @Column(name = "ticket_type")
-    @Enumerated(EnumType.STRING)
-    private TicketType type;
+  @Column(name = "ticket_type")
+  @Enumerated(EnumType.STRING)
+  private TicketType type;
 
-    @Column(name = "creation_date")
-    private Timestamp creationTime;
-
-
+  @Column(name = "creation_date")
+  private Timestamp creationTime;
 }
