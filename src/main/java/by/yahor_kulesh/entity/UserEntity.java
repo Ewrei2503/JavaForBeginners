@@ -10,13 +10,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.sql.Timestamp;
 import java.util.Set;
 import java.util.UUID;
-
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -24,28 +22,28 @@ import java.util.UUID;
 @Table(name = "usr")
 public class UserEntity {
 
-    public UserEntity(UUID id) {
-        this.id = id;
-    }
+  public UserEntity(UUID id) {
+    this.id = id;
+  }
 
-    @Id
-    @Column(name = "id")
-    private UUID id;
+  @Id
+  @Column(name = "id")
+  private UUID id;
 
-    @Column(name = "name")
-    private String name;
+  @Column(name = "name")
+  private String name;
 
-    @Column(name = "creation_date")
-    private Timestamp creationTime;
+  @Column(name = "creation_date")
+  private Timestamp creationTime;
 
-    @Column(name = "role")
-    @Enumerated(EnumType.STRING)
-    private Role role;
+  @Column(name = "role")
+  @Enumerated(EnumType.STRING)
+  private Role role;
 
-    @Column(name = "status")
-    @Enumerated(EnumType.STRING)
-    private UserStatus status;
+  @Column(name = "status")
+  @Enumerated(EnumType.STRING)
+  private UserStatus status;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<TicketEntity> tickets;
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  private Set<TicketEntity> tickets;
 }
