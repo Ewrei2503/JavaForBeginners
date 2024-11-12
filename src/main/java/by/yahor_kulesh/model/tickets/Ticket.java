@@ -12,18 +12,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
+@Setter
 public class Ticket extends Data {
   private final BigDecimal price;
 
-  @Setter private ZonedDateTime date;
-
-  @Setter private UUID userId;
-
-  @Setter private String ticketType;
-
-  @Setter private String ticketClass;
-
-  @Setter private String startDate;
+  private ZonedDateTime date;
+  private UUID userId;
+  private String ticketType;
+  private String ticketClass;
+  private String startDate;
 
   public Ticket() {
     this.date = null;
@@ -46,6 +43,16 @@ public class Ticket extends Data {
     this.date = ticket.date;
     this.price = ticket.price;
     this.userId = ticket.userId;
+  }
+
+  public String getDateOfEvent() {
+    if (!(Objects.isNull(this.getStartDate()))) {
+      return this.getStartDate();
+    } else if (Objects.isNull((this.getDate()))) {
+      return null;
+    } else {
+      return this.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    }
   }
 
   @Override
@@ -80,11 +87,7 @@ public class Ticket extends Data {
             ? null
             : this.getCreationTime().format(DateTimeFormatter.RFC_1123_DATE_TIME))
         + ";\nDate of event: "
-        + (!(Objects.isNull(this.getStartDate()))
-            ? this.getStartDate()
-            : (Objects.isNull((this.getDate()))
-                ? null
-                : this.getDate().format(DateTimeFormatter.RFC_1123_DATE_TIME)))
+        + this.getDateOfEvent()
         + ";\nPrice: "
         + ((Objects.isNull(this.getPrice())) ? 0.0 : this.getPrice())
         + "$.\n\n\n";
@@ -99,7 +102,7 @@ public class Ticket extends Data {
     try {
       for (int str = 0; str < input.length(); str++) {
         for (char[] limit : limits) {
-          if (input.charAt(str) >= limit[0] & input.charAt(str) <= limit[1]) {
+          if (input.charAt(str) >= limit[0] && input.charAt(str) <= limit[1]) {
             break;
           } else lim++;
         }
@@ -115,11 +118,11 @@ public class Ticket extends Data {
   }
 
   public static String validateEventCode(int eventCode) {
-    if (eventCode > 0 & eventCode < 10) {
+    if (eventCode > 0 && eventCode < 10) {
       return "00" + eventCode;
-    } else if (eventCode > 9 & eventCode < 100) {
+    } else if (eventCode > 9 && eventCode < 100) {
       return "0" + eventCode;
-    } else if (eventCode > 100 & eventCode < 999) {
+    } else if (eventCode > 100 && eventCode < 999) {
       return String.valueOf(eventCode);
     } else {
       System.err.println("Event code is not valid! Must be digits between 0 and 999! Write again:");

@@ -82,7 +82,7 @@ public interface TicketMapper extends CommonMapper, RowMapper<TicketEntity> {
         target = "creationTime",
         source = "creationTime",
         qualifiedByName = "zonedDateTimeToTimestamp"),
-    @Mapping(target = "user", source = "userId", qualifiedByName = "UUIDToUserEntity")
+    @Mapping(target = "user", source = "userId", qualifiedByName = "uuidToUserEntity")
   })
   TicketEntity toEntity(Ticket ticket);
 
@@ -94,8 +94,8 @@ public interface TicketMapper extends CommonMapper, RowMapper<TicketEntity> {
     } else return TicketType.NOT_DEFINED;
   }
 
-  @Named(value = "UUIDToUserEntity")
-  default UserEntity UUIDToUserEntity(UUID uuid) {
+  @Named(value = "uuidToUserEntity")
+  default UserEntity uuidToUserEntity(UUID uuid) {
     if (Objects.isNull(uuid)) {
       return null;
     } else {

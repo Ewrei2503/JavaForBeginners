@@ -1,5 +1,7 @@
 package by.yahor_kulesh.utils;
 
+import java.util.Arrays;
+
 public abstract class ObjectCollection {
   protected Object[] objects;
 
@@ -7,17 +9,14 @@ public abstract class ObjectCollection {
 
   protected Object[] addAndResize(Object object, int capacity) {
     Object[] resizedArray = new Object[objects.length + capacity];
-    fillResizedArray(resizedArray, object);
+    resizedArray = fillResizedArray(resizedArray, object);
     return resizedArray;
   }
 
-  protected void fillResizedArray(Object[] resizedArray, Object object) {
-    int x = 0;
-    while (x < firstEmptyElement) {
-      resizedArray[x] = objects[x];
-      x++;
-    }
-    resizedArray[x] = object;
+  protected Object[] fillResizedArray(Object[] resizedArray, Object object) {
+    resizedArray = Arrays.copyOf(objects, resizedArray.length);
+    resizedArray[firstEmptyElement] = object;
+    return resizedArray;
   }
 
   public int size() {

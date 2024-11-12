@@ -13,10 +13,12 @@ import jakarta.persistence.Table;
 import java.sql.Timestamp;
 import java.util.UUID;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "ticket")
+@NoArgsConstructor
 public class TicketEntity {
   @Id
   @Column(name = "id")
@@ -32,4 +34,9 @@ public class TicketEntity {
 
   @Column(name = "creation_date")
   private Timestamp creationTime;
+
+  public TicketEntity(UUID ticketId) {
+    this.id = ticketId;
+    this.setCreationTime(new Timestamp(System.currentTimeMillis()));
+  }
 }

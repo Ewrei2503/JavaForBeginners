@@ -6,7 +6,6 @@ import by.yahor_kulesh.model.tickets.Ticket;
 import by.yahor_kulesh.model.users.Client;
 import by.yahor_kulesh.repositories.TicketRepository;
 import by.yahor_kulesh.repositories.UserRepository;
-import by.yahor_kulesh.utils.DataTestClass;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
@@ -14,7 +13,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -26,16 +24,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TicketService {
 
-  private final File ticketDataFile;
   private final TicketRepository ticketRepository;
   private final UserRepository userRepository;
-  private final UserService userService;
 
   @Transactional
   public void insertOrUpdateTicket(Ticket ticket) {
     if (Objects.isNull(ticket) || Objects.isNull(ticket.getId())) {
-      System.err.println("Ticket or ticket's ID cannot be null");
-      return;
+      throw new IllegalArgumentException("Ticket or ticket's ID cannot be null");
     }
     ticketRepository.save(TicketMapper.INSTANCE.toEntity(ticket));
   }
@@ -43,7 +38,7 @@ public class TicketService {
   @Transactional
   public void deleteTicketById(UUID id) {
     if (Objects.isNull(TicketMapper.INSTANCE.toModel(ticketRepository.getTicketById(id)))) {
-      System.err.println("Ticket not found");
+      throw new IllegalArgumentException("Ticket not found");
     } else {
       ticketRepository.deleteById(id);
     }
@@ -52,22 +47,25 @@ public class TicketService {
   @Transactional(readOnly = true)
   public Ticket getTicketById(UUID id) {
     if (Objects.isNull(id)) {
-      System.err.println("Ticket's ID cannot be null");
-      return null;
+      throw new IllegalArgumentException("Ticket's ID cannot be null");
     } else return TicketMapper.INSTANCE.toModel(ticketRepository.getTicketById(id));
   }
 
   @Transactional(readOnly = true)
   public List<Ticket> getTicketByUserId(UUID userId) {
     if (Objects.isNull(userId)) {
-      System.err.println("User's ID cannot be null");
-      return Collections.emptyList();
+      throw new IllegalArgumentException("User's ID cannot be null");
     }
     return TicketMapper.INSTANCE.toModel(ticketRepository.getTicketByUserId(userId));
   }
 
   @Transactional
   public void insertOrUpdateTicketAndUpdateClient(Ticket ticket, Client client) {
+    if (Objects.isNull(ticket) || Objects.isNull(client)) {
+      throw new IllegalArgumentException("Ticket or Client cannot be null");
+    } else if (Objects.isNull(userRepository.getUserById(client.getId()))) {
+      throw new IllegalArgumentException("User not found");
+    }
     ticket.setUserId(client.getId());
     ticketRepository.save(TicketMapper.INSTANCE.toEntity(ticket));
     userRepository.updateUserStatusById(client.getId());
@@ -75,15 +73,15 @@ public class TicketService {
     client.getTickets().add(ticket);
   }
 
-  public List<Ticket> getTicketsFromFile() {
+  public List<Ticket> getTicketsFromFile(File file) {
     List<Ticket> tickets = new ArrayList<>();
-    try (BufferedReader br = new BufferedReader(new FileReader((ticketDataFile)))) {
+    try (BufferedReader br = new BufferedReader(new FileReader((file)))) {
       String input;
       while ((input = br.readLine()) != null) {
         tickets.add(getTicketFromString(input));
       }
     } catch (IOException e) {
-      System.err.println("File not found!");
+      throw new IllegalArgumentException("File not found!");
     }
     return tickets;
   }
@@ -109,10 +107,5 @@ public class TicketService {
       ticketRepository.save(TicketMapper.INSTANCE.toEntity(new Ticket(id)));
     }
     return ticketRepository.getTicketById(id);
-  }
-
-  public void testApp() {
-    DataTestClass testClass = new DataTestClass(this, userService);
-    testClass.testTicketService();
   }
 }
