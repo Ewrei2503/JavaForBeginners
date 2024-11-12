@@ -6,7 +6,6 @@ import by.yahor_kulesh.model.tickets.Sector;
 import by.yahor_kulesh.model.tickets.Ticket;
 import by.yahor_kulesh.model.users.Admin;
 import by.yahor_kulesh.model.users.Client;
-import by.yahor_kulesh.model.users.User;
 import by.yahor_kulesh.services.TicketService;
 import by.yahor_kulesh.services.UserService;
 import by.yahor_kulesh.validators.InputValidator;
@@ -21,22 +20,9 @@ public class DataTestClass {
   public final UserService userService;
 
   public void testTicketService() {
-    readTicketsFromFile();
     ConcertTicket concert = testTicket();
-    Client client = testUser(concert);
-    ObjectArray ticketRepo = null;
-    try {
-      ticketRepo = testObjectArray();
-    } catch (IndexOutOfBoundsException e) {
-      System.err.println(e.getMessage());
-    }
-    testObjectSet(client);
-    testTicketDAO(ticketRepo, client);
+    testUser(concert);
     testUserDAO();
-  }
-
-  private void readTicketsFromFile() {
-    System.out.println(ticketService.getTicketsFromFile());
   }
 
   private ConcertTicket testTicket() {
@@ -56,7 +42,7 @@ public class DataTestClass {
     return concert;
   }
 
-  private Client testUser(ConcertTicket concert) {
+  private void testUser(ConcertTicket concert) {
     Client client = new Client();
     userService.insertOrUpdateUser(client);
     ticketService.insertOrUpdateTicketAndUpdateClient(new BusTicket(567.89), client);
@@ -72,35 +58,6 @@ public class DataTestClass {
     admin.print();
     admin.checkTicket(new BusTicket());
     admin.checkTicket(concert);
-    return client;
-  }
-
-  private void testObjectSet(Client client) {
-    User u2 = new Client();
-    u2.setId(client.getId());
-    System.out.println("\n\n\nu2 user is equal to client: " + u2.equals(client));
-
-    ObjectSetAsArray userRepo = new ObjectSetAsArray();
-    System.out.println("Result of inputting client value:" + userRepo.add(client));
-    System.out.println("Result of input similar as client value:" + userRepo.add(u2));
-    System.out.println("User repo contains u2 or client:" + userRepo.contains(u2));
-    System.out.println("Result of input other value:" + userRepo.add(new Admin()) + "\n\n\n");
-    System.out.println("----------------------------------");
-    userRepo.iterate(System.out::println);
-    System.out.println("User repo value was removed: " + !userRepo.remove(u2));
-    System.out.println("----------------------------------");
-    userRepo.iterate(System.out::println);
-  }
-
-  private ObjectArray testObjectArray() {
-    ObjectArray ticketRepo = new ObjectArray();
-    for (int i = 0; i < 13; i++) {
-      ticketRepo.add(new Ticket());
-    }
-    System.out.println(ticketRepo.getByIndex(11));
-    ticketRepo.removeByIndex(5);
-    System.out.println(ticketRepo.getByIndex(10));
-    return ticketRepo;
   }
 
   private void testUserDAO() {
@@ -109,36 +66,5 @@ public class DataTestClass {
     Admin adm = (Admin) userService.getUserById(a.getId());
     System.out.println(a.equals(adm));
     userService.deleteUserById(a.getId());
-  }
-
-  private void testTicketDAO(ObjectArray ticketRepo, Client client) {
-    Ticket ticket = null;
-    for (int i = 0; i < ticketRepo.size(); i++) {
-      ticketService.insertOrUpdateTicket(
-          ticketRepo.getByIndex(i) instanceof ConcertTicket
-              ? (ConcertTicket) ticketRepo.getByIndex(i)
-              : (ticketRepo.getByIndex(i) instanceof BusTicket
-                  ? (BusTicket) ticketRepo.getByIndex(i)
-                  : (Ticket) ticketRepo.getByIndex(i)));
-      if (i == 2) {
-        ticket =
-            ticketRepo.getByIndex(i) instanceof ConcertTicket
-                ? (ConcertTicket) ticketRepo.getByIndex(i)
-                : (ticketRepo.getByIndex(i) instanceof BusTicket
-                    ? (BusTicket) ticketRepo.getByIndex(i)
-                    : (Ticket) ticketRepo.getByIndex(i));
-      }
-    }
-    System.out.println(
-        ticketService.getTicketById(ticket.getId())
-            + "\n-----------------------------------------------");
-    System.out.println(
-        ticketService.getTicketByUserId(client.getId())
-            + "\n-----------------------------------------------");
-    ticketService.insertOrUpdateTicket(new BusTicket(ticket));
-    System.out.println(
-        ticketService.getTicketById(ticket.getId())
-            + "\n----------------------------------------------");
-    ticketService.deleteTicketById(ticket.getId());
   }
 }

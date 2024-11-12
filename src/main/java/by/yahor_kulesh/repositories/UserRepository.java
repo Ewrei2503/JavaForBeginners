@@ -17,7 +17,7 @@ public interface UserRepository extends CrudRepository<UserEntity, UUID> {
   void removeUserById(UUID id);
 
   /**
-   * Required to declare here @Transactional manually in case of using @Query - else
+   * Required to declare here {@code @Transactional} manually in case of using {@code @Query} - else
    * InvalidDataAccessApiUsageException handles
    */
   @Transactional

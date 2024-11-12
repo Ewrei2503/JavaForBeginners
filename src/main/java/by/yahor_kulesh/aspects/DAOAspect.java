@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -35,8 +36,11 @@ public class DAOAspect {
   @Value("${ticket.get}")
   public boolean getTicket;
 
-  @Around(
-      "(execution(* by.yahor_kulesh.services.UserService.*(..)) || execution(* by.yahor_kulesh.services.TicketService.* (..))) && @annotation(org.springframework.transaction.annotation.Transactional) ")
+  @Pointcut(
+      "(execution(* by.yahor_kulesh.services.UserService.*(..)) || execution(* by.yahor_kulesh.services.TicketService.* (..)))  && @annotation(org.springframework.transaction.annotation.Transactional)")
+  public void pointCut() {}
+
+  @Around("pointCut()")
   public Object checkMethodProhibition(ProceedingJoinPoint joinPoint) {
     try {
       String method = joinPoint.getSignature().getName();

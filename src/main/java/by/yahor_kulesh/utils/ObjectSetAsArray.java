@@ -14,17 +14,14 @@ public class ObjectSetAsArray extends ObjectCollection {
   public boolean add(Object o) {
     if (contains(o)) {
       return false;
+    } else if (firstEmptyElement >= objects.length * MAX_CAPACITY_PERCENTAGE) {
+      objects = addAndResize(o, objects.length);
+      firstEmptyElement++;
     } else {
-
-      if (firstEmptyElement >= objects.length * MAX_CAPACITY_PERCENTAGE) {
-        objects = addAndResize(o, objects.length);
-        firstEmptyElement++;
-      } else {
-        objects[firstEmptyElement] = o;
-        firstEmptyElement++;
-      }
-      return true;
+      objects[firstEmptyElement] = o;
+      firstEmptyElement++;
     }
+    return true;
   }
 
   public boolean contains(Object o) {
@@ -44,9 +41,10 @@ public class ObjectSetAsArray extends ObjectCollection {
         if (firstEmptyElement - 1 == i) {
           objects[i] = null;
         } else {
-          while (i < firstEmptyElement) {
-            objects[i] = objects[i + 1];
-            i++;
+          int j = i;
+          while (j < firstEmptyElement) {
+            objects[j] = objects[j + 1];
+            j += 1;
           }
         }
         firstEmptyElement--;
