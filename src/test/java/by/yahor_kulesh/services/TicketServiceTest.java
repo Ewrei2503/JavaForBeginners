@@ -65,14 +65,14 @@ class TicketServiceTest {
 
     Assertions.assertThrows(
         IllegalArgumentException.class, () -> ticketService.insertOrUpdateTicket(ticket));
-    Mockito.verify(ticketRepository, Mockito.never()).save(Mockito.isA(TicketEntity.class));
+    Mockito.verify(ticketRepository, Mockito.never()).save(null);
   }
 
   @Test
   void insertOrUpdateTicket_NullAsAParameter_ThrowsException() {
     Assertions.assertThrows(
         IllegalArgumentException.class, () -> ticketService.insertOrUpdateTicket(null));
-    Mockito.verify(ticketRepository, Mockito.never()).save(Mockito.isA(TicketEntity.class));
+    Mockito.verify(ticketRepository, Mockito.never()).save(null);
   }
 
   @Test
@@ -129,7 +129,7 @@ class TicketServiceTest {
     Assertions.assertThrows(
         IllegalArgumentException.class, () -> ticketService.deleteTicketById(null));
     Mockito.verify(ticketRepository, Mockito.times(1)).getTicketById(null);
-    Mockito.verify(ticketRepository, Mockito.never()).deleteById(Mockito.isA(UUID.class));
+    Mockito.verify(ticketRepository, Mockito.never()).deleteById(null);
   }
 
   @Test
@@ -159,7 +159,7 @@ class TicketServiceTest {
   void getTicketById_NullAsParameter_ThrowsException() {
     Assertions.assertThrows(
         IllegalArgumentException.class, () -> ticketService.getTicketById(null));
-    Mockito.verify(ticketRepository, Mockito.never()).getTicketById(Mockito.isA(UUID.class));
+    Mockito.verify(ticketRepository, Mockito.never()).getTicketById(null);
   }
 
   @Test
@@ -185,7 +185,7 @@ class TicketServiceTest {
   void getTicketByUserId_NullAsParameter_ThrowsException() {
     Assertions.assertThrows(
         IllegalArgumentException.class, () -> ticketService.getTicketByUserId(null));
-    Mockito.verify(ticketRepository, Mockito.never()).getTicketByUserId(Mockito.isA(UUID.class));
+    Mockito.verify(ticketRepository, Mockito.never()).getTicketByUserId(null);
   }
 
   @Test
@@ -258,9 +258,9 @@ class TicketServiceTest {
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> ticketService.insertOrUpdateTicketAndUpdateClient(null, null));
-    Mockito.verify(ticketRepository, Mockito.never()).save(Mockito.isA(TicketEntity.class));
-    Mockito.verify(userRepository, Mockito.never()).updateUserStatusById(Mockito.isA(UUID.class));
-    Mockito.verify(userRepository, Mockito.never()).getUserById(Mockito.isA(UUID.class));
+    Mockito.verify(ticketRepository, Mockito.never()).save(null);
+    Mockito.verify(userRepository, Mockito.never()).updateUserStatusById(null);
+    Mockito.verify(userRepository, Mockito.never()).getUserById(null);
   }
 
   @Test
@@ -269,8 +269,8 @@ class TicketServiceTest {
         IllegalArgumentException.class,
         () -> ticketService.insertOrUpdateTicketAndUpdateClient(ticket, null));
     Mockito.verify(ticketRepository, Mockito.never()).save(ticketEntity);
-    Mockito.verify(userRepository, Mockito.never()).updateUserStatusById(Mockito.isA(UUID.class));
-    Mockito.verify(userRepository, Mockito.never()).getUserById(Mockito.isA(UUID.class));
+    Mockito.verify(userRepository, Mockito.never()).updateUserStatusById(null);
+    Mockito.verify(userRepository, Mockito.never()).getUserById(null);
   }
 
   @Test
@@ -280,7 +280,7 @@ class TicketServiceTest {
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> ticketService.insertOrUpdateTicketAndUpdateClient(null, client));
-    Mockito.verify(ticketRepository, Mockito.never()).save(Mockito.isA(TicketEntity.class));
+    Mockito.verify(ticketRepository, Mockito.never()).save(null);
     Mockito.verify(userRepository, Mockito.never()).updateUserStatusById(client.getId());
     Mockito.verify(userRepository, Mockito.never()).getUserById(client.getId());
   }
