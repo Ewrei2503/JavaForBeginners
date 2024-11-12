@@ -2,6 +2,7 @@ package by.yahor_kulesh.services;
 
 import by.yahor_kulesh.entity.TicketEntity;
 import by.yahor_kulesh.entity.UserEntity;
+import by.yahor_kulesh.mappers.TicketMapper;
 import by.yahor_kulesh.model.tickets.Ticket;
 import by.yahor_kulesh.model.users.Client;
 import by.yahor_kulesh.repositories.TicketRepository;
@@ -24,6 +25,8 @@ import org.mockito.MockitoAnnotations;
 class TicketServiceTest {
 
   private Ticket ticket;
+  private TicketEntity ticketEntity;
+  private UUID ticketId;
 
   @Mock private TicketRepository ticketRepository;
 
@@ -38,7 +41,9 @@ class TicketServiceTest {
   @BeforeEach
   void setUp() {
     MockitoAnnotations.openMocks(this);
-    ticket = new Ticket();
+    ticketId = UUID.randomUUID();
+    ticket = new Ticket(ticketId);
+    ticketEntity = TicketMapper.INSTANCE.toEntity(ticket);
   }
 
   @Test
@@ -60,21 +65,21 @@ class TicketServiceTest {
 
     Assertions.assertThrows(
         IllegalArgumentException.class, () -> ticketService.insertOrUpdateTicket(ticket));
-    Mockito.verify(ticketRepository, Mockito.never()).save(Mockito.any());
+    Mockito.verify(ticketRepository, Mockito.never()).save(Mockito.isA(TicketEntity.class));
   }
 
   @Test
   void insertOrUpdateTicket_NullAsAParameter_ThrowsException() {
     Assertions.assertThrows(
         IllegalArgumentException.class, () -> ticketService.insertOrUpdateTicket(null));
-    Mockito.verify(ticketRepository, Mockito.never()).save(Mockito.any());
+    Mockito.verify(ticketRepository, Mockito.never()).save(Mockito.isA(TicketEntity.class));
   }
 
   @Test
   void insertOrUpdateTicket_RepositoryError_ThrowsException() {
     Mockito.doThrow(new RuntimeException("Database Error"))
         .when(ticketRepository)
-        .save(Mockito.isA(TicketEntity.class));
+        .save(ticketEntity);
 
     Assertions.assertThrows(
         RuntimeException.class, () -> ticketService.insertOrUpdateTicket(ticket));
@@ -119,7 +124,7 @@ class TicketServiceTest {
 
   @Test
   void deleteTicketById_NullAsParameter_ThrowsException() {
-    Mockito.when(ticketRepository.getTicketById(Mockito.isA(UUID.class))).thenReturn(null);
+    Mockito.when(ticketRepository.getTicketById(null)).thenReturn(null);
 
     Assertions.assertThrows(
         IllegalArgumentException.class, () -> ticketService.deleteTicketById(null));
@@ -129,13 +134,11 @@ class TicketServiceTest {
 
   @Test
   void deleteTicketById_CorrectUUID_DeletesCorrectly() {
-    UUID ticketId = UUID.randomUUID();
-    Mockito.when(ticketRepository.getTicketById(Mockito.isA(UUID.class)))
-        .thenReturn(new TicketEntity(ticketId));
+    Mockito.when(ticketRepository.getTicketById(ticketId)).thenReturn(new TicketEntity(ticketId));
 
     ticketService.deleteTicketById(ticketId);
 
-    Mockito.verify(ticketRepository, Mockito.times(1)).getTicketById(Mockito.isA(UUID.class));
+    Mockito.verify(ticketRepository, Mockito.times(1)).getTicketById(ticketId);
     Mockito.verify(ticketRepository, Mockito.times(1)).deleteById(uuidArgumentCaptor.capture());
     Assertions.assertEquals(
         ticketId, uuidArgumentCaptor.getValue(), "UUID should match the expected value");
@@ -143,13 +146,13 @@ class TicketServiceTest {
 
   @Test
   void deleteTicketById_WrongUUID_ThrowsException() {
-    UUID ticketId = new UUID(Long.MAX_VALUE, Long.MAX_VALUE);
-    Mockito.when(ticketRepository.getTicketById(Mockito.isA(UUID.class))).thenReturn(null);
+    ticketId = new UUID(Long.MAX_VALUE, Long.MAX_VALUE);
+    Mockito.when(ticketRepository.getTicketById(ticketId)).thenReturn(null);
 
     Assertions.assertThrows(
         IllegalArgumentException.class, () -> ticketService.deleteTicketById(ticketId));
-    Mockito.verify(ticketRepository, Mockito.times(1)).getTicketById(Mockito.isA(UUID.class));
-    Mockito.verify(ticketRepository, Mockito.never()).deleteById(Mockito.isA(UUID.class));
+    Mockito.verify(ticketRepository, Mockito.times(1)).getTicketById(ticketId);
+    Mockito.verify(ticketRepository, Mockito.never()).deleteById(ticketId);
   }
 
   @Test
@@ -161,24 +164,21 @@ class TicketServiceTest {
 
   @Test
   void getTicketById_CorrectUUID_ReturnsTicket() {
-    UUID ticketId = UUID.randomUUID();
-    Mockito.when(ticketRepository.getTicketById(Mockito.isA(UUID.class)))
-        .thenReturn(new TicketEntity(ticketId));
+    Mockito.when(ticketRepository.getTicketById(ticketId)).thenReturn(new TicketEntity(ticketId));
 
-    Ticket gotTicket = ticketService.getTicketById(ticketId);
+    Ticket actualTicket = ticketService.getTicketById(ticketId);
 
-    Mockito.verify(ticketRepository, Mockito.times(1)).getTicketById(Mockito.isA(UUID.class));
-    Assertions.assertEquals(ticketId, gotTicket.getId(), "UUID should match the expected value");
+    Mockito.verify(ticketRepository, Mockito.times(1)).getTicketById(ticketId);
+    Assertions.assertEquals(ticketId, actualTicket.getId(), "UUID should match the expected value");
   }
 
   @Test
   void getTicketById_WrongUUID_ReturnsNull() {
-    UUID ticketId = new UUID(Long.MAX_VALUE, Long.MAX_VALUE);
-    Mockito.when(ticketRepository.getTicketById(Mockito.isA(UUID.class))).thenReturn(null);
+    Mockito.when(ticketRepository.getTicketById(ticketId)).thenReturn(null);
 
     Assertions.assertNull(ticketService.getTicketById(ticketId));
-    Mockito.verify(ticketRepository, Mockito.times(1)).getTicketById(Mockito.isA(UUID.class));
-    Mockito.verify(ticketRepository, Mockito.never()).deleteById(Mockito.isA(UUID.class));
+    Mockito.verify(ticketRepository, Mockito.times(1)).getTicketById(ticketId);
+    Mockito.verify(ticketRepository, Mockito.never()).deleteById(ticketId);
   }
 
   @Test
@@ -192,12 +192,11 @@ class TicketServiceTest {
   void getTicketByUserId_CorrectUUID_ReturnsList() {
     UUID userId = UUID.randomUUID();
     ArrayList<TicketEntity> ticketEntities = getTicketEntities(userId);
-    Mockito.when(ticketRepository.getTicketByUserId(Mockito.isA(UUID.class)))
-        .thenReturn(ticketEntities);
+    Mockito.when(ticketRepository.getTicketByUserId(userId)).thenReturn(ticketEntities);
 
     List<Ticket> gotTicket = ticketService.getTicketByUserId(userId);
 
-    Mockito.verify(ticketRepository, Mockito.times(1)).getTicketByUserId(Mockito.isA(UUID.class));
+    Mockito.verify(ticketRepository, Mockito.times(1)).getTicketByUserId(userId);
     Assertions.assertNotNull(gotTicket, "Ticket List should not be null");
     Assertions.assertAll(
         () -> Assertions.assertEquals(userId, ticketEntities.get(0).getUser().getId()),
@@ -207,12 +206,10 @@ class TicketServiceTest {
 
   @Test
   void getTicketByUserId_WrongUUID_ReturnsEmptyCollection() {
-    UUID ticketId = new UUID(Long.MAX_VALUE, Long.MAX_VALUE);
-    Mockito.when(ticketRepository.getTicketByUserId(Mockito.isA(UUID.class)))
-        .thenReturn(Collections.emptyList());
+    Mockito.when(ticketRepository.getTicketByUserId(ticketId)).thenReturn(Collections.emptyList());
 
     Assertions.assertEquals(Collections.emptyList(), ticketService.getTicketByUserId(ticketId));
-    Mockito.verify(ticketRepository, Mockito.times(1)).getTicketByUserId(Mockito.isA(UUID.class));
+    Mockito.verify(ticketRepository, Mockito.times(1)).getTicketByUserId(ticketId);
   }
 
   @Test
@@ -234,7 +231,7 @@ class TicketServiceTest {
   @Test
   void getOrCreateTicket_UnknownUUID_CreatesNewTicket() {
     UUID userId = new UUID(Long.MAX_VALUE, Long.MAX_VALUE);
-    Mockito.when(ticketRepository.getTicketById(Mockito.isA(UUID.class))).thenReturn(null);
+    Mockito.when(ticketRepository.getTicketById(userId)).thenReturn(null);
 
     ticketService.getOrCreateTicket(userId);
 
@@ -246,14 +243,13 @@ class TicketServiceTest {
 
   @Test
   void getOrCreateTicket_CorrectUUID_ReturnsTicket() {
-    UUID ticketId = UUID.randomUUID();
     Mockito.when(ticketRepository.getTicketById(ticketId))
         .thenReturn(new TicketEntity(ticketId))
         .thenReturn(new TicketEntity(ticketId));
 
     TicketEntity gotTicket = ticketService.getOrCreateTicket(ticketId);
 
-    Mockito.verify(ticketRepository, Mockito.times(2)).getTicketById(Mockito.isA(UUID.class));
+    Mockito.verify(ticketRepository, Mockito.times(2)).getTicketById(ticketId);
     Assertions.assertEquals(ticketId, gotTicket.getId(), "UUID should match the expected value");
   }
 
@@ -272,7 +268,7 @@ class TicketServiceTest {
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> ticketService.insertOrUpdateTicketAndUpdateClient(ticket, null));
-    Mockito.verify(ticketRepository, Mockito.never()).save(Mockito.isA(TicketEntity.class));
+    Mockito.verify(ticketRepository, Mockito.never()).save(ticketEntity);
     Mockito.verify(userRepository, Mockito.never()).updateUserStatusById(Mockito.isA(UUID.class));
     Mockito.verify(userRepository, Mockito.never()).getUserById(Mockito.isA(UUID.class));
   }
@@ -285,8 +281,8 @@ class TicketServiceTest {
         IllegalArgumentException.class,
         () -> ticketService.insertOrUpdateTicketAndUpdateClient(null, client));
     Mockito.verify(ticketRepository, Mockito.never()).save(Mockito.isA(TicketEntity.class));
-    Mockito.verify(userRepository, Mockito.never()).updateUserStatusById(Mockito.isA(UUID.class));
-    Mockito.verify(userRepository, Mockito.never()).getUserById(Mockito.isA(UUID.class));
+    Mockito.verify(userRepository, Mockito.never()).updateUserStatusById(client.getId());
+    Mockito.verify(userRepository, Mockito.never()).getUserById(client.getId());
   }
 
   @Test
@@ -314,9 +310,9 @@ class TicketServiceTest {
     Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> ticketService.insertOrUpdateTicketAndUpdateClient(ticket, client));
-    Mockito.verify(ticketRepository, Mockito.never()).save(Mockito.isA(TicketEntity.class));
-    Mockito.verify(userRepository, Mockito.never()).updateUserStatusById(Mockito.isA(UUID.class));
-    Mockito.verify(userRepository, Mockito.times(1)).getUserById(Mockito.isA(UUID.class));
+    Mockito.verify(ticketRepository, Mockito.never()).save(ticketEntity);
+    Mockito.verify(userRepository, Mockito.never()).updateUserStatusById(client.getId());
+    Mockito.verify(userRepository, Mockito.times(1)).getUserById(client.getId());
   }
 
   @Test
